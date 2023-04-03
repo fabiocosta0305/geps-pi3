@@ -1,0 +1,25 @@
+{% extends 'main.html' %}
+{% block title %}
+    <title>GEPS - Gerenciamento Eletrônico de Professores Substitutos</title>
+{% endblock %}
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <nav class="navbar bg-primary justify-content-center" data-bs-theme="dark"></nav>
+        <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group" role="group" aria-label="First group">
+                <a href="/cadUser/" class="btn btn-primary">Cadastro Docente</a>&nbsp;
+                <a href="/cadInstituicao/" class="btn btn-primary">Cadastro Instituição</a>&nbsp;
+                <a href="/changePassword/" class="btn btn-primary">Alterar Senha</a>&nbsp;
+                <a href="#" class="btn btn-primary">Pesquisar Docente</a>
+            </div>
+            <div class="btn-group">
+                <a href="" class="btn btn-primary">Usuário:</a>&nbsp;
+                <input type="text" class="form-control item" name="usuario" id="usuario" value="{{request.user|upper}}" disabled >
+                <a href="/logouts/" class="btn btn-primary">Sair</a>
+            </div>
+            <br>
+        </div>
+    {% else %}
+        Você não tem acesso a essa área!
+    {% endif %}
+{% endblock %}

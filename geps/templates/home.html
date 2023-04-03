@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+{% block content %}
+  <nav class="navbar bg-primary justify-content-center" data-bs-theme="dark"></nav>
+  <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+    <div class="btn-group" role="group" aria-label="First group"></div>
+    <div class="btn-group">
+      <a href="/loginUser/" class="btn btn-primary">Login</a>&nbsp;
+      <a href="/cadUser/" class="btn btn-primary">Cadastro Docente</a>&nbsp;
+      <a href="/cadInstituicao/" class="btn btn-primary">Cadastro Instituição</a>
+    </div>
+    <br>
+  </div>
+  <div class="text-center">
+    <img src="/static/img/logo_geps.png" width="300" height="200"><br><br>
+    <h2>Bem-vindo !</h2><br>
+    <h4>Plataforma de Gerenciamento Eletrônico de Professores Substitutos</h4>
+    <h4>Para as escolas da Rede Municipal de Ensino</h4>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+body{
+    background-color: #dee9ff;
+}
+
+.cadastro-form{
+	padding: 10px 0px;
+	text-align: center;
+	margin-top: 0px;
+}
+
+.cadastro-form form{
+    background-color: #fff;
+    max-width: 700px;
+    margin: auto;
+    padding: 25px;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.075);
+    text-align: center;
+}
+
+.cadastro-form .form-icon{
+	text-align: center;
+    background-color: #5891ff;
+    border-radius: 50%;
+    font-size: 40px;
+    color: white;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    margin-bottom: 50px;
+    line-height: 100px;
+}
+
+.cadastro-form .form-group{
+	text-align: center;
+	width: 300px;
+    padding: 0px 0px;
+}
+
+.cadastro-form .item{
+	border-radius: 10px;
+    font-size: 15px;
+}
+
+.cadastro-form .criar-conta{
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #5791ff;
+    border: none;
+    color: white;
+    margin-top: 20px;
+}
+
+.cadastro-form  .mensagem{
+    font-size: 15px;
+    width: 300px;
+    margin-bottom: 20px;
+    margin-top: 0px;
+    text-align: center;
+    padding: 10px 20px;
+}
+
+.btn-group{
+    margin-bottom: 20px;
+    margin-top: 20px;
+    align: right;
+}
+.text-pol{
+    padding: 24px 0
+    font-size: 15px;
+    margin-top: 20px;
+    max-width: 50%;
+}
