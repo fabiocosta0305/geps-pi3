@@ -1,6 +1,8 @@
 asgiref==3.6.0
+dj-database-url==1.3.0
 Django==4.1.7
 django-appconf==1.0.5
+django-on-heroku==1.1.2
 django-simple-cookie-consent==0.1.1
 gunicorn==20.1.0
 mysql==0.0.3
@@ -8,4 +10,7 @@ mysql-connector==2.2.9
 mysql-connector-python==8.0.32
 mysqlclient==2.1.1
 protobuf==3.20.3
+psycopg2-binary==2.9.6
 sqlparse==0.4.3
+typing_extensions==4.5.0
+whitenoise==6.4.0
