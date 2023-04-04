@@ -10,7 +10,7 @@
                 <a href="/home/" class="btn btn-primary">Home</a>&nbsp;
             </div>
         </div>
-        <form action="#" name="form-inst" id="formInst" method="post">
+        <form action="/insertInst/" name="form-inst" id="formInst" method="post">
             <div>
                 {% if msg %}
                     <div class="alert {{class}} mensagem mx-auto">
@@ -46,12 +46,17 @@
                 </div>
                 <br>
                 <div class="form-inline">
-                    <input type="text" class="form-control item" name="name" id="name_resp" placeholder="Nome do Responsável:" style="width:100%">
+                    <input type="text" class="form-control item" name="name_resp" id="name_resp" placeholder="Nome do Responsável:" style="width:100%">
                 </div>
                 <br>
                 <div class="form-inline">
                     <input type="text" class="form-control item" name="email_resp" id="email_resp" placeholder="Email do Responsável:" style="width:60%">
                     <input type="text" class="form-control item" name="telefone_resp" id="telefone_resp" placeholder="Tel. do Responsável com DDD:" style="width:40%">
+                </div>
+                <br>
+                <div class="form-inline">
+                    <input type="password" class="form-control item" name="password" id="password" placeholder="Senha:" style="width:50%">
+                    <input type="password" class="form-control item" name="password-conf" id="password-conf" placeholder="Repita a Senha:" style="width:50%">
                 </div>
                 <br>
                 <div class="form-group mx-auto">

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from geps.views import home, cadUser, insertUser, loginUser, validLoginUser, dashboard, logouts, changePassword, validChangePassword, policy, cadInstituicao
+from geps.views import home, cadUser, insertUser, loginUser, validLoginUser, dashboard, logouts, changePassword, validChangePassword, policy, cadInstituicao, insertInst
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,6 +24,7 @@ urlpatterns = [
     path('cadUser/', cadUser),
     path('cadInstituicao/', cadInstituicao),
     path('insertUser/', insertUser),
+    path('insertInst/', insertInst),
     path('loginUser/', loginUser),
     path('validLoginUser/', validLoginUser),
     path('dashboard/', dashboard),
