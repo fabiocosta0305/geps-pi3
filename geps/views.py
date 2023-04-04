@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from geps.models import Docente,Instituicao
-from geps.utils import funcoes
-from geps.forms import DocenteForm
+from django.contrib.auth.models import User, Group
+from geps.models import Docente
+from geps.utils.funcoes import checkGroup, checkEmail
+
 
 # Pagina Inicial do sistema
 def home(request):
@@ -14,9 +14,11 @@ def home(request):
 def cadUser(request):
     return render(request, 'cadUser.html')
 
+
 # Formulário de Cadastro da Instituicao
 def cadInstituicao(request):
     return render(request, 'cadInstituicao.html')
+
 
 # Validacoes e insercao do usuario
 def insertUser(request):
@@ -39,7 +41,7 @@ def insertUser(request):
     # Validacao de conteudo da senha
 
     # Validacao do email invalido
-    if not funcoes.checkEmail(request.POST['email']):
+    if not checkEmail(request.POST['email']):
         data['msg'] = 'Email Inválido!'
         data['class'] = 'alert-danger'
         return render(request, 'cadUser.html', data)
@@ -59,11 +61,13 @@ def insertUser(request):
         # Inserção no Usuario
         user = User.objects.create_user(request.POST['name'], request.POST['email'], request.POST['password'])
         Docente.reg_funcional = request.POST['reg_funcional']
-        #user.reg_funcional = request.POST['reg_funcional']
         user.save()
+        user_group = Group.objects.get(name='Docente')
+        user.groups.add(user_group)
         data['msg'] = 'Usuário cadastrado com sucesso!'
         data['class'] = 'alert-success'
         return render(request, 'loginUser.html', data)
+
 
 # Formulário de login
 def loginUser(request):
@@ -76,7 +80,10 @@ def validLoginUser(request):
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
     if user is not None:
         login(request, user)
-        return redirect('/dashboard/')
+        data['instituicao'] = False
+        if checkGroup(user, "Instituicao"):
+            data['instituicao'] = True
+        return render(request, 'dashboard/home.html', data)
     else:
         data['msg'] = 'Usuário ou Senha inválidos!'
         data['class'] = 'alert-danger'
@@ -103,7 +110,7 @@ def changePassword(request):
 def validChangePassword(request):
     data = {}
     user = User.objects.get(email=request.user.email)
-    if (request.POST['password'] != request.POST['password-conf']):
+    if request.POST['password'] != request.POST['password-conf']:
         data['msg'] = 'As Senhas devem ser iguais!'
         data['class'] = 'alert-danger'
     else:
@@ -113,6 +120,7 @@ def validChangePassword(request):
         data['msg'] = 'Senha Alterada com Sucesso!'
         data['class'] = 'alert-success'
         return render(request, 'loginUser.html', data)
+
 
 # Página de politica de privacidade
 def policy(request):
