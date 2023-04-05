@@ -72,7 +72,7 @@ def insertUser(request):
             status=0
         )
         docente.save()
-        user_group = Group.objects.get(name='Docente')
+        user_group = Group.objects.get(id=2)
         user.groups.add(user_group)
         data['msg'] = 'Usuário cadastrado com sucesso!'
         data['class'] = 'alert-success'
@@ -142,7 +142,7 @@ def insertInst(request):
             senha=passwd.hexdigest(),
         )
         instituicao.save()
-        user_group = Group.objects.get(name='Instituicao')
+        user_group = Group.objects.get(id=1)
         user.groups.add(user_group)
         data['msg'] = 'Instituicão cadastrada com sucesso!'
         data['class'] = 'alert-success'
