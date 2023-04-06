@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import django_on_heroku
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d!jp3b!uoboux_#6$xsbey16j03!dn)as&f(xp11_i1ypx(#w#'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -84,10 +87,10 @@ WSGI_APPLICATION = 'projetointegrador.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'kc2z524hro8ms5u1',
-        'HOST': 'pk1l4ihepirw9fob.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
-        'USER': 'w3k3tn3d382qlcsv',
-        'PASSWORD': 'm6ad3pivyvmg7wiw',
+        'NAME': os.environ.get('DATABASE_NAME'),
+        'HOST': os.environ.get('DATABASE_HOST'),
+        'USER': os.environ.get('DATABASE_USER'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
         'PORT': '3306',
         'OPTIONS': {
             'init_command': 'SET default_storage_engine=InnoDB'
@@ -136,4 +139,4 @@ STATICFILES_DIR = '/static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-django_on_heroku.settings(locals())
+django_on_heroku.settings(locals(), databases=False)
