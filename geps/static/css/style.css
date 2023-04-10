@@ -56,6 +56,14 @@ body{
     margin-top: 20px;
 }
 
+.btn2 {
+    background-color: #5791ff;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin-top: 20px;
+}
+
 .cadastro-form  .mensagem{
     font-size: 15px;
     width: 300px;

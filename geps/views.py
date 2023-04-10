@@ -4,6 +4,7 @@ import hashlib
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
 
 from geps.models import Docente, Instituicao
 from geps.utils.funcoes import checkGroup, checkEmail
@@ -205,3 +206,4 @@ def validChangePassword(request):
 # Página de politica de privacidade
 def policy(request):
     return render(request, 'policy.html')
+
