@@ -4,9 +4,9 @@ import hashlib
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from django.db.models import Q, Count
 
-from geps.models import Docente, Instituicao
+from geps.models import Docente, Instituicao, Demanda, DisponibilidadeDocente
 from geps.utils.funcoes import checkGroup, checkEmail
 
 
@@ -124,7 +124,7 @@ def insertInst(request):
         # Inserção da Instituicao
         user = User.objects.create_user(request.POST['name_resp'], request.POST['email_resp'], request.POST['password'])
         user.save()
-        now = datetime.datetime.utcnow()
+        # now = datetime.datetime.utcnow()
         passwd = hashlib.md5()
         passwd.update(b"{request.POST['password']}")
         instituicao = Instituicao(
@@ -207,3 +207,109 @@ def validChangePassword(request):
 def policy(request):
     return render(request, 'policy.html')
 
+
+# Pagina de Pesquisa de Docentes
+def formPesquisaDocente(request):
+    data = {}
+    data['instituicao'] = True
+    return render(request, 'dashboard/pesquisaDocente.html', data)
+
+
+# Busca dados no banco Docente
+def pesquisaDocente(request):
+    data = {}
+    data['instituicao'] = True                     # Envia parametro de grupo
+    if 'diaSemana' in request.POST:                # Verifica se algum check ou setado
+        dias = request.POST.getlist('diaSemana')   # Pega a lista com todos os checks
+        data["checks"] = dias
+        # Verifica se algum check de segunda vou setado por periodo
+        if 'seg_manha' in dias or 'seg_tarde' in dias or 'seg_noite' in dias:
+            if 'seg_manha' in dias:
+                periodo_manha = Q(periodo__contains='Manhã')
+            else:
+                periodo_manha = Q()
+            if 'seg_tarde' in dias:
+                periodo_tarde = Q(periodo__contains='Tarde')
+            else:
+                periodo_tarde = Q()
+            if 'seg_noite' in dias:
+                periodo_noite = Q(periodo__contains='Noite')
+            else:
+                periodo_noite = Q()
+            segunda = Q(diaSemana__contains='Segunda-Feira') & (periodo_manha | periodo_tarde | periodo_noite)
+        else:
+            segunda = Q()
+        # Verifica se algum check de terça vou setado por periodo
+        if 'ter_manha' in dias or 'ter_tarde' in dias or 'ter_noite' in dias:
+            if 'ter_manha' in dias:
+                periodo_manha = Q(periodo__contains='Manhã')
+            else:
+                periodo_manha = Q()
+            if 'ter_tarde' in dias:
+                periodo_tarde = Q(periodo__contains='Tarde')
+            else:
+                periodo_tarde = Q()
+            if 'ter_noite' in dias:
+                periodo_noite = Q(periodo__contains='Noite')
+            else:
+                periodo_noite = Q()
+            terca = Q(diaSemana__contains='Terca-Feira') & (periodo_manha | periodo_tarde | periodo_noite)
+        else:
+            terca = Q()
+        # Verifica se algum check de quarta vou setado por periodo
+        if 'qua_manha' in dias or 'qua_tarde' in dias or 'qua_noite' in dias:
+            if 'qua_manha' in dias:
+                periodo_manha = Q(periodo__contains='Manhã')
+            else:
+                periodo_manha = Q()
+            if 'qua_tarde' in dias:
+                periodo_tarde = Q(periodo__contains='Tarde')
+            else:
+                periodo_tarde = Q()
+            if 'qua_noite' in dias:
+                periodo_noite = Q(periodo__contains='Noite')
+            else:
+                periodo_noite = Q()
+            quarta = Q(diaSemana__contains='Quarta-Feira') & (periodo_manha | periodo_tarde | periodo_noite)
+        else:
+            quarta = Q()
+        # Verifica se algum check de quinta vou setado por periodo
+        if 'qui_manha' in dias or 'qui_tarde' in dias or 'qui_noite' in dias:
+            if 'qui_manha' in dias:
+                periodo_manha = Q(periodo__contains='Manhã')
+            else:
+                periodo_manha = Q()
+            if 'qui_tarde' in dias:
+                periodo_tarde = Q(periodo__contains='Tarde')
+            else:
+                periodo_tarde = Q()
+            if 'qui_noite' in dias:
+                periodo_noite = Q(periodo__contains='Noite')
+            else:
+                periodo_noite = Q()
+            quinta = Q(diaSemana__contains='Quinta-Feira') & (periodo_manha | periodo_tarde | periodo_noite)
+        else:
+            quinta = Q()
+        # Verifica se algum check de sexta vou setado por periodo
+        if 'sex_manha' in dias or 'sex_tarde' in dias or 'sex_noite' in dias:
+            if 'sex_manha' in dias:
+                periodo_manha = Q(periodo__contains='Manhã')
+            else:
+                periodo_manha = Q()
+            if 'sex_tarde' in dias:
+                periodo_tarde = Q(periodo__contains='Tarde')
+            else:
+                periodo_tarde = Q()
+            if 'sex_noite' in dias:
+                periodo_noite = Q(periodo__contains='Noite')
+            else:
+                periodo_noite = Q()
+            sexta = Q(diaSemana__contains='Sexta-Feira') & (periodo_manha | periodo_tarde | periodo_noite)
+        else:
+            sexta = Q()
+        # Busca no banco de acordo com os dados selecionados
+        filtro = DisponibilidadeDocente.objects.filter(
+            segunda | terca | quarta | quinta | sexta
+        ).values('docente__nome').annotate(Count('docente_id'))
+        data['dados'] = filtro
+    return render(request, 'dashboard/pesquisaDocente.html', data)
