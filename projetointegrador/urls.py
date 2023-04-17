@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.contrib.auth import views as auth_views
 
-from geps.views import home, cadUser, insertUser, loginUser, validLoginUser, dashboard, logouts, changePassword, validChangePassword, policy, cadInstituicao, insertInst, formPesquisaDocente, pesquisaDocente
+from geps.views import home, cadUser, insertUser, loginUser, validLoginUser, dashboard, logouts, changePassword, validChangePassword, policy, cadInstituicao, insertInst, formPesquisaDocente, pesquisaDocente, buscaDocente
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,4 +40,5 @@ urlpatterns = [
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="registration/password_reset_done.html"), name='password_reset_complete'),
     path('formPesquisaDocente/', formPesquisaDocente),
     path('pesquisaDocente/', pesquisaDocente),
+    path('buscaDocente', buscaDocente, name='buscaDocente'),
 ]

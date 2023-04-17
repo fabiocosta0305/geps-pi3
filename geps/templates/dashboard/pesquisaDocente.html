@@ -1,4 +1,5 @@
 {% extends 'dashboard/home.html' %}
+{% load static %}
 {% block content %}
 <div class="form-2-container section-container section-container-gray-bg">
     <div class="container">
@@ -80,7 +81,7 @@
                                 <legend class="w-auto px-2">Resultado</legend>
                                 <div class="form-group">
                                     {% for dado in dados %}
-                                        <a href="#" >{{ dado.docente__nome }}</a><br>
+                                        <input type="submit" class="btnDocente btn btn-primary btn-customized" value='{{ dado.docente__nome }}' id='btnDocente'><br><br>
                                     {% endfor %}
                                 </div>
                             </fieldset>
@@ -90,14 +91,14 @@
                             <fieldset class="form-group border p-3">
                                 <legend class="w-auto px-2">Dados do Docente</legend>
                                 <div class="form-group">
-                                    <label for="name">Nome:</label>
-                                    <input type="text" class="form-control item" name="name" id="name" readonly>
+                                    <label for="nome-docente">Nome:</label>
+                                    <input type="text" class="form-control item" name="name" id="nome-docente" readonly>
                                     <label for="email">Email:</label>
-                                    <input type="text" class="form-control item" name="email" id="email" readonly>
+                                    <input type="text" class="form-control item" name="email" id="email-docente" readonly>
                                     <label for="telefone">Telefone:</label>
-                                    <input type="text" class="form-control item" name="telefone" id="telefone" readonly>
+                                    <input type="text" class="form-control item" name="telefone" id="tel-docente" readonly>
                                     <label for="registro_funcional">Registro Funcional:</label>
-                                    <input type="text" class="form-control item" name="registro_funcional" id="registro_funcional" readonly>
+                                    <input type="text" class="form-control item" name="registro_funcional" id="reg-funcional" readonly>
                                     <br><label style="text-align:center"><strong>Validação do Registro Funcional</strong></label><br>
                                     <input type="radio" name="validacao" id="nao_validado" value="nao_validado">
                                     <label for="nao_validado">Não Validado</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -120,4 +121,43 @@
         </div>
     </div>
 </div>
+<!-- Função ajax para buscar docente sem refresh -->
+<script>
+    $('.btnDocente').click(function(e){
+        e.preventDefault();
+        var nome_docente = $(this).val();
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+        $.ajax({
+            url: '/buscaDocente',
+            type: 'POST',
+            headers:{ "X-CSRFToken": csrftoken },
+            data: {
+                'nome_docente': nome_docente,
+            },
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            alert(textStatus + ': ' + errorThrown);
+        }).done(function (data) {
+            if(!data.hasOwnProperty('error')){
+                var res = JSON.parse(data);
+                document.getElementById("nome-docente").value = res[0].fields.nome;
+                document.getElementById("email-docente").value = res[0].fields.email;
+                document.getElementById("tel-docente").value = res[0].fields.telefone;
+                document.getElementById("reg-funcional").value = res[0].fields.reg_funcional;
+                if (res[0].fields.status == 1) {
+                    document.getElementById("validado").checked = true;
+                    document.getElementById("bloqueado").checked = false;
+                    document.getElementById("nao_validado").checked = false;
+                } else if (res[0].fields.status == 2) {
+                    document.getElementById("validado").checked = false;
+                    document.getElementById("bloqueado").checked = true;
+                    document.getElementById("nao_validado").checked = false;
+                } else {
+                    document.getElementById("validado").checked = false;
+                    document.getElementById("bloqueado").checked = false;
+                    document.getElementById("nao_validado").checked = true;
+                }
+            }
+        });
+    });
+</script>
 {% endblock %}

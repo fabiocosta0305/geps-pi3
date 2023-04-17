@@ -4,6 +4,7 @@ from model_utils import Choices
 
 # Criando classe com campos de Docente
 class Docente(models.Model):
+    objects = None
     nome = models.CharField(max_length=100)
     email = models.CharField(max_length=150)
     senha = models.CharField(max_length=150)

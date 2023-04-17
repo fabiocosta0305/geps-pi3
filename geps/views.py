@@ -1,10 +1,15 @@
 import datetime
 import hashlib
+import json
 
+from django import http
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
+from django.core.serializers import serialize
 from django.shortcuts import render, redirect
 from django.db.models import Q, Count
+from django.template.loader import render_to_string
+from django.http import HttpResponse, JsonResponse
 
 from geps.models import Docente, Instituicao, Demanda, DisponibilidadeDocente
 from geps.utils.funcoes import checkGroup, checkEmail
@@ -313,3 +318,13 @@ def pesquisaDocente(request):
         ).values('docente__nome').annotate(Count('docente_id'))
         data['dados'] = filtro
     return render(request, 'dashboard/pesquisaDocente.html', data)
+
+
+# Busca cadastro Docente
+def buscaDocente(request):
+    if request.POST.get('nome_docente', False):
+        data = {}
+        filtro = Docente.objects.filter(nome=request.POST['nome_docente'])
+        data = serialize("json", filtro)
+        return JsonResponse(data, safe=False)
+
