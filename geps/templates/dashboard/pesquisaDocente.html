@@ -5,13 +5,18 @@
     <div class="container">
         <div class="row">
             <div class="col form-2-box wow fadeInUp">
+                {% if msg %}
+                    <div class="alert {{class}} mensagem mx-auto text-center">
+                        {{msg}}
+                    </div>
+                {% endif %}
                 <form action="/pesquisaDocente/" method="post">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-4">
-                            <fieldset class="form-group border p-3">
-                                <legend class="w-auto px-3">Pesquisa Docente</legend>
-                                <fieldset class="form-group border p-3 bg-white">
+                            <fieldset class="form-group p-2">
+                                <legend class="w-auto px-3"><strong>Pesquisa Docente</strong></legend>
+                                <fieldset class="form-group border p-2 bg-white">
                                     <!-- Segunda-Feira -->
                                     <fieldset class="form-group border p-3">
                                         <label class="form-check-label"><strong>Segunda-Feira</strong></label>
@@ -72,13 +77,16 @@
                                             <label class="form-check-label" for="sex_noite">Noite</label>
                                         </div>
                                     </fieldset>
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-primary btn-customized">Pesquisar</button>
+                                    </div>
                                 </fieldset>
                             </fieldset>
                         </div>
                         <div class="col-md-3">
                             <!-- Resultado da Pesquisa -->
-                            <fieldset class="form-group border p-3">
-                                <legend class="w-auto px-2">Resultado</legend>
+                            <fieldset class="form-group p-2">
+                                <legend class="w-auto px-2"><strong>Resultado</strong></legend>
                                 <div class="form-group">
                                     {% for dado in dados %}
                                         <input type="submit" class="btnDocente btn btn-primary btn-customized" value='{{ dado.docente__nome }}' id='btnDocente'><br><br>
@@ -87,9 +95,12 @@
                             </fieldset>
                         </div>
                         <div class="col-md-5">
+                </form>
+                <form action="/gravaStatusDocente/" method="post">
+                    {% csrf_token %}
                             <!-- Dados do Docente -->
-                            <fieldset class="form-group border p-3">
-                                <legend class="w-auto px-2">Dados do Docente</legend>
+                            <fieldset class="form-group p-2">
+                                <legend class="w-auto px-2"><strong>Dados do Docente</strong></legend>
                                 <div class="form-group">
                                     <label for="nome-docente">Nome:</label>
                                     <input type="text" class="form-control item" name="name" id="nome-docente" readonly>
@@ -107,13 +118,10 @@
                                     <input type="radio" name="validacao" id="bloqueado" value="bloqueado">
                                     <label for="bloqueado">Bloqueado</label>
                                 </div>
+                                <div class="col">
+                                    <button type="submit" class="btnStsDocente btn btn-primary btn-customized">Gravar</button>
+                                </div>
                             </fieldset>
-                        </div>
-                    </div>
-                    <!-- Submit Button  -->
-                    <div class="form-group row">
-                        <div class="col">
-                            <button type="submit" class="btn btn-primary btn-customized">Pesquisar</button>
                         </div>
                     </div>
                 </form>
@@ -121,8 +129,8 @@
         </div>
     </div>
 </div>
-<!-- Função ajax para buscar docente sem refresh -->
 <script>
+    // Função ajax para buscar docente sem refresh
     $('.btnDocente').click(function(e){
         e.preventDefault();
         var nome_docente = $(this).val();
@@ -156,6 +164,27 @@
                     document.getElementById("bloqueado").checked = false;
                     document.getElementById("nao_validado").checked = true;
                 }
+            }
+        });
+    });
+</script>
+<script>
+    // Função ajax para gravar status docente sem refresh
+    $('.btnStsDocente').click(function(e){
+        e.preventDefault();
+        var nome_docente = $(#nome-docente).val();
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+        $.ajax({
+            url: '/gravaStatusDocente',
+            type: 'POST',
+            headers:{ "X-CSRFToken": csrftoken },
+            data: {
+                'nome_docente': nome_docente,
+            },
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            alert(textStatus + ': ' + errorThrown);
+        }).done(function (data) {
+            if(!data.hasOwnProperty('error')){
             }
         });
     });

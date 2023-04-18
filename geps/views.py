@@ -328,3 +328,21 @@ def buscaDocente(request):
         data = serialize("json", filtro)
         return JsonResponse(data, safe=False)
 
+
+# Atualiza status Docente
+def gravaStatusDocente(request):
+    if request.POST['name']:
+        data = {}
+        data['instituicao'] = True
+        sts = 0
+        if request.POST['validacao'] == 'nao_validao':
+            sts = 0
+        elif request.POST['validacao'] == 'validado':
+            sts = 1
+        elif request.POST['validacao'] == 'bloqueado':
+            sts = 2
+        Docente.objects.filter(nome=request.POST['name']).update(status=sts)
+        data['msg'] = 'Validação Gravada com sucesso!'
+        data['class'] = 'alert-success'
+        return render(request, 'dashboard/pesquisaDocente.html', data)
+
