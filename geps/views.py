@@ -5,6 +5,7 @@ import json
 from django import http
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
+from django.contrib.auth.password_validation import validate_password
 from django.core.serializers import serialize
 from django.shortcuts import render, redirect
 from django.db.models import Q, Count
@@ -12,7 +13,7 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
 
 from geps.models import Docente, Instituicao, Demanda, DisponibilidadeDocente
-from geps.utils.funcoes import checkGroup, checkEmail
+from geps.utils.funcoes import checkGroup, checkEmail, checkPassword
 
 
 # Pagina Inicial do sistema
@@ -28,9 +29,14 @@ def cadUser(request):
 # Validacoes e insercao do usuario
 def insertUser(request):
     data = {}
+    # Validação de nome completo
+    if len(request.POST['nome']) == 0:
+        data['msg'] = 'O Nome é obrigatório!'
+        data['class'] = 'alert-danger'
+        return render(request, 'cadUser.html', data)
     # Validação de nome de usuario
     if len(request.POST['name']) == 0:
-        data['msg'] = 'O Nome é obrigatório!'
+        data['msg'] = 'O Nome de Usuário é obrigatório!'
         data['class'] = 'alert-danger'
         return render(request, 'cadUser.html', data)
     # Validacão da senha vazia
@@ -44,7 +50,13 @@ def insertUser(request):
         data['class'] = 'alert-danger'
         return render(request, 'cadUser.html', data)
     # Validacao de conteudo da senha
-
+    retorno = checkPassword(request.POST['name'], request.POST["password"])
+    if retorno['success'] != 'OK' and retorno['password_validations']:
+        qtd_erros = len(retorno['password_validations'])
+        for erros in range(0, qtd_erros):
+            data['msg'] = retorno['password_validations'][erros]
+        data['class'] = 'alert-danger'
+        return render(request, 'cadUser.html', data)
     # Validacao do email invalido
     if not checkEmail(request.POST['email']):
         data['msg'] = 'Email Inválido!'
@@ -64,13 +76,18 @@ def insertUser(request):
         # Validação de Registro funcional
 
         # Inserção no Usuario
-        user = User.objects.create_user(request.POST['name'], request.POST['email'], request.POST['password'])
+        user = User.objects.create_user(
+            username=request.POST['name'],
+            email=request.POST['email'],
+            password=request.POST['password'],
+            first_name=request.POST['nome']
+        )
         user.save()
         now = datetime.datetime.utcnow()
         passwd = hashlib.md5()
         passwd.update(b"{request.POST['password']}")
         docente = Docente(
-            nome=request.POST['name'],
+            nome=request.POST['nome'],
             email=request.POST['email'],
             senha=passwd.hexdigest(),
             reg_funcional=request.POST['reg_funcional'],
@@ -98,9 +115,14 @@ def insertInst(request):
         data['msg'] = 'O Nome é obrigatório!'
         data['class'] = 'alert-danger'
         return render(request, 'cadInstituicao.html', data)
-    # Validacao do nome do responsavel
-    if len(request.POST['name_resp']) == 0:
+    # Validacao do nome completo do responsavel
+    if len(request.POST['nome_resp']) == 0:
         data['msg'] = 'O Nome do Responsável é obrigatório!'
+        data['class'] = 'alert-danger'
+        return render(request, 'cadInstituicao.html', data)
+    # Validacao do nome de usuario do responsavel
+    if len(request.POST['name_resp']) == 0:
+        data['msg'] = 'O Nome de Usuário do Responsável é obrigatório!'
         data['class'] = 'alert-danger'
         return render(request, 'cadInstituicao.html', data)
     # Validacao do email do responsável
@@ -119,7 +141,13 @@ def insertInst(request):
         data['class'] = 'alert-danger'
         return render(request, 'cadInstituicao.html', data)
     # Validacao de conteudo da senha
-
+    retorno = checkPassword(request.POST['name'], request.POST["password"])
+    if retorno['success'] != 'OK' and retorno['password_validations']:
+        qtd_erros = len(retorno['password_validations'])
+        for erros in range(0, qtd_erros):
+            data['msg'] = retorno['password_validations'][erros]
+        data['class'] = 'alert-danger'
+        return render(request, 'cadInstituicao.html', data)
     else:
         # Validação de nome de usuario ja cadastrado
         if User.objects.filter(username=request.POST['name']).exists():
@@ -127,7 +155,12 @@ def insertInst(request):
             data['class'] = 'alert-danger'
             return render(request, 'cadInstituicao.html', data)
         # Inserção da Instituicao
-        user = User.objects.create_user(request.POST['name_resp'], request.POST['email_resp'], request.POST['password'])
+        user = User.objects.create_user(
+            username=request.POST['name_resp'],
+            email=request.POST['email_resp'],
+            password=request.POST['password'],
+            first_name=request.POST['nome_resp']
+        )
         user.save()
         # now = datetime.datetime.utcnow()
         passwd = hashlib.md5()
@@ -142,7 +175,7 @@ def insertInst(request):
             cep=request.POST['cep'],
             telefone=request.POST['telefone_inst'],
             email=request.POST['email_inst'],
-            nome_responsavel=request.POST['name_resp'],
+            nome_responsavel=request.POST['nome_resp'],
             email_responsavel=request.POST['email_resp'],
             telefone_responsavel=request.POST['telefone_resp'],
             senha=passwd.hexdigest(),

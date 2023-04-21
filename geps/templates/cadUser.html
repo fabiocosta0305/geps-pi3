@@ -13,7 +13,7 @@
         <form action="/insertUser/" name="form-user" id="formUser" method="post">
             <div>
                 {% if msg %}
-                    <div class="alert {{class}} mensagem mx-auto">
+                    <div class="alert {{class}} mensagem mx-auto" id="msg">
                         {{msg}}
                     </div>
                 {% endif %}
@@ -22,7 +22,10 @@
                     <span><i class="icon icon-user"></i></span>
                 </div>
                 <div class="form-group mx-auto">
-                    <input type="text" class="form-control item" name="name" id="name" placeholder="Nome do Usuário:">
+                    <input type="text" class="form-control item" name="nome" id="nome" placeholder="Nome Completo:">
+                </div>
+                <div class="form-group mx-auto">
+                    <input type="text" class="form-control item" name="name" id="name" placeholder="Nome do Usuário (login):">
                 </div>
                 <div class="form-group mx-auto">
                     <input type="password" class="form-control item" name="password" id="password" placeholder="Senha do Usuário:">
@@ -41,5 +44,15 @@
                 </div>
             </div>
         </form>
+    </div>
+    <div id="regra_senha">
+        <span class="small">
+            <ul>
+                <li>Sua senha não pode ser muito parecida com o resto das suas informações pessoais.</li>
+                <li>Sua senha precisa conter pelo menos 9 caracteres.</li>
+                <li>Sua senha não pode ser uma senha comumente utilizada.</li>
+                <li>Sua senha não pode ser inteiramente numérica.</li>
+            </ul>
+        </span>
     </div>
 {% endblock %}

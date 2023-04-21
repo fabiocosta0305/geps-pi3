@@ -6,7 +6,7 @@
     <nav class="navbar bg-primary justify-content-center" data-bs-theme="dark"></nav>
     {% if request.user.is_authenticated %}
         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-            <div class="btn-group" role="group" aria-label="First group">
+            <div class="btn-group" role="group" aria-label="First group" style="width:60%;">
                 {% if not instituicao %}
                     <a href="#" class="btn btn-primary">Disponibilidade</a>&nbsp;
                 {% endif %}
@@ -15,9 +15,9 @@
                 {% endif %}
                 <a href="/changePassword/" class="btn btn-primary">Alterar Senha</a>&nbsp;
             </div>
-            <div class="btn-group">
-                <a href="" class="btn btn-primary">Usuário:</a>&nbsp;
-                    <input type="text" class="form-control item" name="usuario" id="usuario" value="{{request.user|upper}}" disabled >
+            <div class="btn-group" style="width:40%;">
+                <a href="" class="btn btn-primary" style="pointer-events: none;">Usuário:</a>&nbsp;
+                    <input type="text" class="form-control item" name="usuario" id="usuario" value="{{request.user.first_name|upper}}" disabled >
                 <a href="/logouts/" class="btn btn-primary">Sair</a>
             </div>
             <br>

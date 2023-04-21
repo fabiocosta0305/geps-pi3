@@ -13,7 +13,7 @@
         <form action="/insertInst/" name="form-inst" id="formInst" method="post">
             <div>
                 {% if msg %}
-                    <div class="alert {{class}} mensagem mx-auto">
+                    <div class="alert {{class}} mensagem mx-auto" id="msg">
                         {{msg}}
                     </div>
                 {% endif %}
@@ -46,7 +46,8 @@
                 </div>
                 <br>
                 <div class="form-inline">
-                    <input type="text" class="form-control item" name="name_resp" id="name_resp" placeholder="Nome do Responsável:" style="width:100%">
+                    <input type="text" class="form-control item" name="nome_resp" id="nome_resp" placeholder="Nome Completo do Responsável:" style="width:60%">
+                    <input type="text" class="form-control item" name="name_resp" id="name_resp" placeholder="Nome de Usuário do Responsável:" style="width:40%">
                 </div>
                 <br>
                 <div class="form-inline">
@@ -64,5 +65,15 @@
                 </div>
             </div>
         </form>
+    </div>
+    <div id="regra_senha">
+        <span class="small">
+            <ul>
+                <li>Sua senha não pode ser muito parecida com o resto das suas informações pessoais.</li>
+                <li>Sua senha precisa conter pelo menos 9 caracteres.</li>
+                <li>Sua senha não pode ser uma senha comumente utilizada.</li>
+                <li>Sua senha não pode ser inteiramente numérica.</li>
+            </ul>
+        </span>
     </div>
 {% endblock %}

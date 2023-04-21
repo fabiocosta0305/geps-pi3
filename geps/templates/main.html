@@ -21,5 +21,12 @@
 {% endblock %}
 {% block content %}
 {% endblock %}
+{% block script %}
+<script>
+    $('#msg').on('click', function (e) {
+        $("#msg").hide();
+    });
+</script>
+{% endblock %}
 </body>
 </html>
