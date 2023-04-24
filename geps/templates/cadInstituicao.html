@@ -22,37 +22,37 @@
                     <span><i class="icon icon-user"></i></span>
                 </div>
                 <div class="form-inline">
-                    <input type="text" class="form-control item" name="name" id="name" placeholder="Nome da Instituição:" style="width:100%">
+                    <input type="text" class="form-control item" name="name" id="name" placeholder="Nome da Instituição:" value="{{ name }}" style="width:100%">
                 </div>
                 <br>
                 <div class="form-inline">
-                    <input type="text" class="form-control item" name="endereco" id="endereco" placeholder="Endereço:" style="width:80%">
-                    <input type="text" class="form-control item" name="numero" id="numero" placeholder="Número:" style="width:20%">
+                    <input type="text" class="form-control item" name="endereco" id="endereco" placeholder="Endereço:" value="{{ endereco }}" style="width:80%">
+                    <input type="text" class="form-control item" name="numero" id="numero" placeholder="Número:" value="{{ numero }}" style="width:20%">
                 </div>
                 <br>
                 <div class="form-inline">
-                    <input type="text" class="form-control item" name="bairro" id="bairro" placeholder="Bairro:" style="width:60%">
-                    <input type="text" class="form-control item" name="cep" id="cep" placeholder="CEP:" style="width:40%">
+                    <input type="text" class="form-control item" name="bairro" id="bairro" placeholder="Bairro:" value="{{ bairro }}" style="width:60%">
+                    <input type="text" class="form-control item" name="cep" id="cep" placeholder="CEP:" value="{{ cep }}" style="width:40%">
                 </div>
                 <br>
                 <div class="form-inline">
-                    <input type="text" class="form-control item" name="municipio" id="municipio" placeholder="Município:" style="width:80%">
-                    <input type="text" class="form-control item" name="uf" id="uf" placeholder="UF:" style="width:20%">
+                    <input type="text" class="form-control item" name="municipio" id="municipio" placeholder="Município:" value="{{ municipio }}" style="width:80%">
+                    <input type="text" class="form-control item" name="uf" id="uf" placeholder="UF:" value="{{ uf }}" style="width:20%">
                 </div>
                 <br>
                 <div class="form-inline">
-                    <input type="text" class="form-control item" name="email_inst" id="email_inst" placeholder="Email da Instituição:" style="width:60%">
-                    <input type="text" class="form-control item" name="telefone_inst" id="telefone_inst" placeholder="Tel. da Instituição com DDD:" style="width:40%">
+                    <input type="text" class="form-control item" name="email_inst" id="email_inst" placeholder="Email da Instituição:" value="{{ email_inst }}" style="width:60%">
+                    <input type="text" class="form-control item" name="telefone_inst" id="telefone_inst" placeholder="Tel. da Instituição com DDD:" value="{{ telefone_inst }}" style="width:40%">
                 </div>
                 <br>
                 <div class="form-inline">
-                    <input type="text" class="form-control item" name="nome_resp" id="nome_resp" placeholder="Nome Completo do Responsável:" style="width:60%">
-                    <input type="text" class="form-control item" name="name_resp" id="name_resp" placeholder="Nome de Usuário do Responsável:" style="width:40%">
+                    <input type="text" class="form-control item" name="nome_resp" id="nome_resp" placeholder="Nome Completo do Responsável:" value="{{ nome_resp }}" style="width:60%">
+                    <input type="text" class="form-control item" name="name_resp" id="name_resp" placeholder="Nome de Usuário do Responsável:" value="{{ name_resp }}" style="width:40%">
                 </div>
                 <br>
                 <div class="form-inline">
-                    <input type="text" class="form-control item" name="email_resp" id="email_resp" placeholder="Email do Responsável:" style="width:60%">
-                    <input type="text" class="form-control item" name="telefone_resp" id="telefone_resp" placeholder="Tel. do Responsável com DDD:" style="width:40%">
+                    <input type="text" class="form-control item" name="email_resp" id="email_resp" placeholder="Email do Responsável:" value="{{ email_resp }}" style="width:60%">
+                    <input type="text" class="form-control item" name="telefone_resp" id="telefone_resp" placeholder="Tel. do Responsável com DDD:" value="{{ telefone_resp }}" style="width:40%">
                 </div>
                 <br>
                 <div class="form-inline">
@@ -61,7 +61,7 @@
                 </div>
                 <br>
                 <div class="form-group mx-auto">
-                    <button type="submit" class="btn btn-block criar-conta">Criar Conta</button>
+                    <button type="submit" class="btn btn-block criar-conta" id="btn-criar-conta">Criar Conta</button>
                 </div>
             </div>
         </form>

@@ -30,6 +30,7 @@ class DisponibilidadeDocente(models.Model):
 
 # Classe com dos campos da Instituição
 class Instituicao(models.Model):
+    objects = None
     nome = models.CharField(max_length=100)
     endereco = models.CharField(max_length=200, null=True)
     numero = models.CharField(max_length=10, null=True)

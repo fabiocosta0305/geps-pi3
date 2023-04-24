@@ -29,6 +29,10 @@ def cadUser(request):
 # Validacoes e insercao do usuario
 def insertUser(request):
     data = {}
+    data['nome'] = request.POST['nome']
+    data['name'] = request.POST['name']
+    data['email'] = request.POST['email']
+    data['reg_funcional'] = request.POST['reg_funcional']
     # Validação de nome completo
     if len(request.POST['nome']) == 0:
         data['msg'] = 'O Nome é obrigatório!'
@@ -110,6 +114,19 @@ def cadInstituicao(request):
 # Validacoes e insercao da Instituicao
 def insertInst(request):
     data = {}
+    data['name'] = request.POST['name']
+    data['endereco'] = request.POST['endereco']
+    data['numero'] = request.POST['numero']
+    data['bairro'] = request.POST['bairro']
+    data['cep'] = request.POST['cep']
+    data['municipio'] = request.POST['municipio']
+    data['uf'] = request.POST['uf']
+    data['email_inst'] = request.POST['email_inst']
+    data['telefone_inst'] = request.POST['telefone_inst']
+    data['nome_resp'] = request.POST['nome_resp']
+    data['name_resp'] = request.POST['name_resp']
+    data['email_resp'] = request.POST['email_resp']
+    data['telefone_resp'] = request.POST['telefone_resp']
     # Validação de nome da instituicao
     if len(request.POST['name']) == 0:
         data['msg'] = 'O Nome é obrigatório!'
@@ -150,8 +167,18 @@ def insertInst(request):
         return render(request, 'cadInstituicao.html', data)
     else:
         # Validação de nome de usuario ja cadastrado
-        if User.objects.filter(username=request.POST['name']).exists():
+        if Instituicao.objects.filter(nome=request.POST['name']).exists():
             data['msg'] = 'Instituição já cadastrada!'
+            data['class'] = 'alert-danger'
+            return render(request, 'cadInstituicao.html', data)
+        # Validacao do nome do responsavel (username)
+        if User.objects.filter(username=request.POST['name_resp']).exists():
+            data['msg'] = 'Usuário já cadastrado! (' + request.POST['name_resp'] + ')'
+            data['class'] = 'alert-danger'
+            return render(request, 'cadInstituicao.html', data)
+        # Validacao do email do responsavel
+        if User.objects.filter(email=request.POST['email_resp']).exists():
+            data['msg'] = 'Email do Usuário já cadastrado! (' + request.POST['email_resp'] + ')'
             data['class'] = 'alert-danger'
             return render(request, 'cadInstituicao.html', data)
         # Inserção da Instituicao
@@ -229,9 +256,19 @@ def changePassword(request):
 def validChangePassword(request):
     data = {}
     user = User.objects.get(email=request.user.email)
+    # Valida senhas diferentes
     if request.POST['password'] != request.POST['password-conf']:
         data['msg'] = 'As Senhas devem ser iguais!'
         data['class'] = 'alert-danger'
+        return render(request, 'loginUser.html', data)
+    # Valida conteudo de senha
+    retorno = checkPassword(request.POST['name'], request.POST["password"])
+    if retorno['success'] != 'OK' and retorno['password_validations']:
+        qtd_erros = len(retorno['password_validations'])
+        for erros in range(0, qtd_erros):
+            data['msg'] = retorno['password_validations'][erros]
+        data['class'] = 'alert-danger'
+        return render(request, 'changePassword.html', data)
     else:
         user.set_password(request.POST['password'])
         user.save()
