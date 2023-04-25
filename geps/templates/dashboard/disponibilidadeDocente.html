@@ -1,0 +1,131 @@
+{% extends 'dashboard/home.html' %}
+{% load static %}
+{% block content %}
+<div class="form-2-container section-container section-container-gray-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col form-2-box wow fadeInUp">
+                {% if msg %}
+                    <div class="alert {{class}} mensagem mx-auto text-center">
+                        {{msg}}
+                    </div>
+                {% endif %}
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <fieldset class="form-group p-2">
+                                <legend class="w-auto px-3"><strong>Disponibilidade</strong></legend>
+                                <fieldset class="form-group border p-2 bg-white">
+                                    <!-- Segunda-Feira -->
+                                    <fieldset class="form-group border p-3">
+                                        <label class="form-check-label sem-seg"><strong>Segunda-Feira</strong></label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="seg_manha" value="seg_manha" {% if 'seg_manha' in checks %}checked{% endif %} >
+                                            <label class="form-check-label" for="seg_manha">Manhã</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="seg_tarde" value="seg_tarde" {% if 'seg_tarde' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="seg_tarde">Tarde</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="seg_noite" value="seg_noite" {% if 'seg_noite' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="seg_noite">Noite</label>
+                                        </div>
+                                    </fieldset>
+                                    <!-- Terça-Feira -->
+                                    <fieldset class="form-group border p-3">
+                                        <label class="form-check-label sem-ter"><strong>Terça-Feira</strong></label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="ter_manha" value="ter_manha" {% if 'ter_manha' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="ter_manha">Manhã</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="ter_tarde" value="ter_tarde" {% if 'ter_tarde' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="ter_tarde">Tarde</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="ter_noite" value="ter_noite" {% if 'ter_noite' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="ter_noite">Noite</label>
+                                        </div>
+                                    </fieldset>
+                                    <!-- Quarta-Feira -->
+                                    <fieldset class="form-group border p-3">
+                                        <label class="form-check-label sem-qua"><strong>Quarta-Feira</strong></label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="qua_manha" value="qua_manha" {% if 'qua_manha' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="qua_manha">Manhã</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="qua_tarde" value="qua_tarde" {% if 'qua_tarde' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="qua_tarde">Tarde</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="qua_noite" value="qua_noite" {% if 'qua_noite' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="qua_noite">Noite</label>
+                                        </div>
+                                    </fieldset>
+                                    <!-- Quinta-Feira -->
+                                    <fieldset class="form-group border p-3">
+                                        <label class="form-check-label sem-qui"><strong>Quinta-Feira</strong></label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="qui_manha" value="qui_manha" {% if 'qui_manha' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="qui_manha">Manhã</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="qui_tarde" value="qui_tarde" {% if 'qui_tarde' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="qui_tarde">Tarde</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="qui_noite" value="qui_noite" {% if 'qui_noite' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="qui_noite">Noite</label>
+                                        </div>
+                                    </fieldset>
+                                    <!-- Sexta-Feira -->
+                                    <fieldset class="form-group border p-3">
+                                        <label class="form-check-label sem-sex"><strong>Sexta-Feira</strong></label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="sex_manha" value="sex_manha" {% if 'sex_manha' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="sex_manha">Manhã</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="sex_tarde" value="sex_tarde" {% if 'sex_tarde' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="sex_tarde">Tarde</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="form-check-input" type="checkbox" name="diaSemana" id="sex_noite" value="sex_noite" {% if 'sex_noite' in checks %}checked{% endif %}>
+                                            <label class="form-check-label" for="sex_noite">Noite</label>
+                                        </div>
+                                    </fieldset>
+                                </fieldset>
+                            </fieldset>
+                        </div>
+                        <div class="col-md-4">
+                            <!-- Resultado da Pesquisa -->
+                            <fieldset class="form-group p-2">
+                                <legend class="w-auto px-3"><strong>Bairros</strong></legend>
+                                <div class="form-group">
+                                    <select multiple class="form-control" id="bairro" name="bairro" style="height:500px;line-height:500px;padding:6px;">
+                                        {% for bairro in all_bairros %}
+                                            <option value="{{ bairro.id }}">{{ bairro.nome }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </fieldset>
+                            <small>* Para adicionar multiplos bairros, basta pressionar a tecla CRTL ao clicar sobre os bairros</small>
+                        </div>
+                        <div class="col-md-4">
+                            <!-- Resultado da Pesquisa -->
+                            <fieldset class="form-group p-2 bg-white>">
+                                <legend class="w-auto px-3"><strong>Bairros Selecionados</strong></legend>
+                                <div class="form-group">
+                                    <select multiple class="form-control bairro_sel" id="bairro_selecionados" name="bairro_selecionados[]" style="height:500px;line-height:500px;padding:6px;">
+                                    </select>
+                                </div>
+                            </fieldset>
+                            <small>* Para remover um bairro selecionado, basta clicar 2x sobre o bairro selecionado</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary btn-customized">Gravar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#bairro').change(function(){
+        var id_bairro = $(this).val();
+        var txt_bairro = $('option:selected', this).text();
+        $('#bairro_selecionados').append($('<option>', {
+            value: id_bairro,
+            text: txt_bairro
+        }));
+    });
+    $('#bairro_selecionados').dblclick(function() {
+        var id_bairro = $(this).val();
+        $('#bairro_selecionados').children('option[value="' + id_bairro + '"]').remove();
+    });
+</script>
+{% endblock %}

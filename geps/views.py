@@ -12,7 +12,7 @@ from django.db.models import Q, Count
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
 
-from geps.models import Docente, Instituicao, Demanda, DisponibilidadeDocente
+from geps.models import Docente, Instituicao, Demanda, DisponibilidadeDocente, Bairro
 from geps.utils.funcoes import checkGroup, checkEmail, checkPassword
 
 
@@ -416,3 +416,8 @@ def gravaStatusDocente(request):
         data['class'] = 'alert-success'
         return render(request, 'dashboard/pesquisaDocente.html', data)
 
+
+def formDispDocente(request):
+    bairros = Bairro.objects.all
+    context = {'all_bairros': bairros}
+    return render(request, 'dashboard/disponibilidadeDocente.html', context)

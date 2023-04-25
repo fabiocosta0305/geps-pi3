@@ -45,6 +45,7 @@ class Instituicao(models.Model):
     telefone_responsavel = models.CharField(max_length=20, null=True)
     senha = models.CharField(max_length=150, default='')
 
+
 # Criando uma classe que representa a Demanda por professores
 class Demanda(models.Model):
     DiaSemana = Choices (
@@ -56,3 +57,33 @@ class Demanda(models.Model):
     instituicao = models.ForeignKey(Instituicao, on_delete=models.CASCADE)
     diaSemana = models.CharField(max_length=20, choices=DiaSemana)
     periodo = models.CharField(max_length=20, choices=Periodo)
+
+
+# Criando uma classe para os Estados
+class Estado(models.Model):
+    sigla = models.CharField(max_length=2, null=True)
+
+    def __str__(self):
+        return self.sigla
+
+
+# Criando uma classe para as Cidades
+class Cidade(models.Model):
+    nome = models.CharField(max_length=100)
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE, related_name='cidades')
+
+    def __str__(self):
+        return self.nome + ' - ' + self.estado.sigla
+
+
+# Criando uma classe para os Bairros
+class Bairro(models.Model):
+    objects = None
+    nome = models.CharField(max_length=50)
+    cidade = models.ForeignKey(Cidade, on_delete=models.CASCADE, related_name='bairros')
+
+    def __str__(self):
+        return self.nome + ' - ' + self.cidade.nome
+
+    class Meta:
+        ordering = ['nome']
