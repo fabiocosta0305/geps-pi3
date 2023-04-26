@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import include, path
 from django.contrib.auth import views as auth_views
 
+from geps.utils.funcoes import enviandoEmail
+
 from geps.views import home, cadUser, insertUser, loginUser, validLoginUser, \
     dashboard, logouts, changePassword, validChangePassword, policy, cadInstituicao, \
     insertInst, formPesquisaDocente, pesquisaDocente, buscaDocente, gravaStatusDocente, \
@@ -47,4 +49,5 @@ urlpatterns = [
     path('gravaStatusDocente/', gravaStatusDocente),
     path('formDispDocente/', formDispDocente),
     path('gravaBairrosDocente/', gravaBairrosDocente),
+    path('enviandoEmail/', enviandoEmail, name='enviandoEmail'),
 ]

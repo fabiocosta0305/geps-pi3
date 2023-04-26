@@ -285,8 +285,10 @@ def policy(request):
 
 # Pagina de Pesquisa de Docentes
 def formPesquisaDocente(request):
+    nome_instituicao = Instituicao.objects.only('nome').get(email_responsavel=request.user.email).nome
     data = {}
     data['instituicao'] = True
+    data['nome_instituicao'] = nome_instituicao
     return render(request, 'dashboard/pesquisaDocente.html', data)
 
 
@@ -387,6 +389,7 @@ def pesquisaDocente(request):
             segunda | terca | quarta | quinta | sexta
         ).values('docente__nome').annotate(Count('docente_id'))
         data['dados'] = filtro
+        data['nome_instituicao'] = request.POST['nome_instituicao']
     return render(request, 'dashboard/pesquisaDocente.html', data)
 
 
@@ -414,6 +417,7 @@ def gravaStatusDocente(request):
         Docente.objects.filter(nome=request.POST['name']).update(status=sts)
         data['msg'] = 'Validação Gravada com sucesso!'
         data['class'] = 'alert-success'
+        data['nome_instituicao'] = request.POST['nome_instituicao']
         return render(request, 'dashboard/pesquisaDocente.html', data)
 
 

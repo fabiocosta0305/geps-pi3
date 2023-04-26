@@ -7,6 +7,7 @@ from django.core import exceptions
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 import django.contrib.auth.password_validation as validation
+from django.shortcuts import render
 
 regex = '([a-zA-Z0-9_.+-]+)@[a-zA-Z0-9_.+-]+\.[a-zA-Z0-9_.+-]'
 
@@ -25,9 +26,12 @@ def checkGroup(user, group):
 
 
 # Enviando Email
-def enviandoEmail(assunto, mensagem, emails):
+def enviandoEmail(request):
+    data = {}
+    data['instituicao'] = True
     from_email = settings.EMAIL_HOST_USER
-    send_mail(assunto, mensagem, from_email, emails, fail_silently=True)
+    send_mail(request.GET.get('assunto'), request.GET.get('mensagem'), from_email, [request.GET.get('email')], fail_silently=True)
+    return render(request, 'dashboard/pesquisaDocente.html', data)
 
 
 # Validando Senha Usuário
