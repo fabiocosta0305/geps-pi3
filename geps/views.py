@@ -32,6 +32,7 @@ def insertUser(request):
     data['nome'] = request.POST['nome']
     data['name'] = request.POST['name']
     data['email'] = request.POST['email']
+    data['telefone'] = request.POST['telefone']
     data['reg_funcional'] = request.POST['reg_funcional']
     # Validação de nome completo
     if len(request.POST['nome']) == 0:
@@ -41,6 +42,11 @@ def insertUser(request):
     # Validação de nome de usuario
     if len(request.POST['name']) == 0:
         data['msg'] = 'O Nome de Usuário é obrigatório!'
+        data['class'] = 'alert-danger'
+        return render(request, 'cadUser.html', data)
+    # Validação do telefone do usuario
+    if len(request.POST['telefone']) == 0:
+        data['msg'] = 'O Telefone é obrigatório!'
         data['class'] = 'alert-danger'
         return render(request, 'cadUser.html', data)
     # Validacão da senha vazia
@@ -94,6 +100,7 @@ def insertUser(request):
             nome=request.POST['nome'],
             email=request.POST['email'],
             senha=passwd.hexdigest(),
+            telefone=request.POST['telefone'],
             reg_funcional=request.POST['reg_funcional'],
             data_cadastro=now.strftime('%Y-%m-%d %H:%M:%S'),
             status=0
@@ -432,7 +439,7 @@ def gravaBairrosDocente(request):
     bairros = Bairro.objects.all                                                # Busca Todos os Bairros para retornar
     data['all_bairros'] = bairros                                               # Alimenta o objeto com os bairros
     data['instituicao'] = False                                                 # Controle de grupo de usuário
-    docente = Docente.objects.only('id').get(nome=request.user.username).id     # Captura id do docente
+    docente = Docente.objects.only('id').get(email=request.user.email).id     # Captura id do docente
     # Pega todos os checks de dia da semana e grava no banco
     if ('diaSemana' in request.POST) and ('bairros_selecionados' in request.POST):
         # Pega todos os checks de dia da semana e grava no banco
