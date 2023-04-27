@@ -103,7 +103,7 @@ DATABASES = {
         'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
         'PORT': '3306',
         'OPTIONS': {
-            'init_command': 'SET default_storage_engine=InnoDB'
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         }
     }
 }

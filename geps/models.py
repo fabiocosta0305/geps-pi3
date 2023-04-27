@@ -87,3 +87,22 @@ class Bairro(models.Model):
 
     class Meta:
         ordering = ['nome']
+
+
+class Regioes(models.Model):
+    regiao = models.CharField(max_length=50)
+    cidade = models.ForeignKey(Cidade, on_delete=models.CASCADE, related_name='regiao')
+
+    def _str_(self):
+        return self.nome + ' - ' + self.cidade.nome
+
+    class Meta:
+        ordering = ['regiao']
+
+
+class DisponibilidadeRegiao(models.Model):
+    docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
+    regiao = models.ForeignKey(Regioes, on_delete=models.CASCADE)
+
+    def _str_(self):
+        return self.docente.nome + ' - ' + self.regiao.regiao
