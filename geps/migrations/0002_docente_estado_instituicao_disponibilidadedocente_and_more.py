@@ -23,13 +23,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nome', models.CharField(max_length=100)),
+                ('estado', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cidades',
+                                             to='geps.estado')),
             ],
-        ),
-        migrations.AddField(
-            model_name='cidade',
-            name='estado',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cidades',
-                                    to='geps.estado'),
         ),
         migrations.CreateModel(
             name='Bairro',
