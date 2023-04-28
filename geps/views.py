@@ -391,9 +391,12 @@ def pesquisaDocente(request):
             sexta = Q(diaSemana__contains='Sexta-Feira') & (periodo_manha | periodo_tarde | periodo_noite)
         else:
             sexta = Q()
+        # Consulta status validacao docente
+        data['cons_validacao'] = request.POST['cons_validacao']
+        cons_validacao = Q(docente__status=request.POST['cons_validacao'])
         # Busca no banco de acordo com os dados selecionados
         filtro = DisponibilidadeDocente.objects.filter(
-            segunda | terca | quarta | quinta | sexta
+            (segunda | terca | quarta | quinta | sexta) & cons_validacao
         ).values('docente__nome').annotate(Count('docente_id'))
         data['dados'] = filtro
         data['nome_instituicao'] = request.POST['nome_instituicao']

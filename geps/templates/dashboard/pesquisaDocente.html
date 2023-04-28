@@ -77,7 +77,27 @@
                                             <label class="form-check-label" for="sex_noite">Noite</label>
                                         </div>
                                     </fieldset>
-                                    <div class="col">
+                                    <div>
+                                        <label><strong>Validação:</strong></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <select name="cons_validacao" class="form-select" aria-label="Default select">
+                                            {% if cons_validacao == '1' %}
+                                                <option value="1" selected >Validado</option>
+                                            {% else %}
+                                                <option value="1">Validado</option>
+                                            {% endif %}
+                                            {% if cons_validacao == '0' %}
+                                                <option value="0" selected >Não Validado</option>
+                                            {% else %}
+                                                <option value="0">Não Validado</option>
+                                            {% endif %}
+                                            {% if cons_validacao == '2' %}
+                                                <option value="2" selected >Bloqueado</option>
+                                            {% else %}
+                                                <option value="2">Bloqueado</option>
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                    <div class="text-center">
                                         <button type="submit" class="btn btn-primary btn-customized">Pesquisar</button>
                                     </div>
                                 </fieldset>
@@ -89,7 +109,7 @@
                                 <legend class="w-auto px-2"><strong>Resultado</strong></legend>
                                 <div class="form-group">
                                     {% for dado in dados %}
-                                        <input type="submit" class="btnDocente btn btn-primary btn-customized" value='{{ dado.docente__nome }}' id='btnDocente'><br><br>
+                                        <input type="submit" class="btnDocente btn btn-primary btn-customized" value='{{ dado.docente__nome }}' id='btnDocente' style="width: 250px;"><br><br>
                                     {% endfor %}
                                 </div>
                             </fieldset>
