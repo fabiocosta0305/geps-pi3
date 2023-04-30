@@ -9,11 +9,22 @@
             <div class="btn-group" role="group" aria-label="First group" style="width:60%;">
                 {% if not instituicao %}
                     <a href="/formDispDocente/" class="btn btn-primary">Disponibilidade</a>&nbsp;
-                {% endif %}
-                {% if instituicao %}
+                {% else %}
                     <a href="/formPesquisaDocente/" class="btn btn-primary">Pesquisar Docente</a>&nbsp;
                 {% endif %}
-                <a href="/changePassword/" class="btn btn-primary">Alterar Senha</a>&nbsp;
+                <a href="" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">Minha Conta</a>
+                <ul class="dropdown-menu">
+                    <li><a href="/changePassword/" class="dropdown-item">Alterar Senha</a></li>
+                    {% if not instituicao %}
+                        <li><a href="/formEditUser/" class="dropdown-item" >Editar Cadastro</a></li>
+                        <li><a href="/formDeleteUser/" class="dropdown-item">Excluir Conta</a></li>
+                    {% else %}
+                        <li><a href="/formEditInst/" class="dropdown-item" >Editar Cadastro</a></li>
+                        <li><a href="/formDeleteInst/" class="dropdown-item">Excluir Conta</a></li>
+                    {% endif %}
+
+
+                </ul>
             </div>
             <div class="btn-group" style="width:40%;">
                 <a href="" class="btn btn-primary bg-light text-muted" style="pointer-events: none;">Usuário:</a>&nbsp;

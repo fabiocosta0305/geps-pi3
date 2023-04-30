@@ -1,0 +1,53 @@
+{% extends 'main.html' %}
+{% block title %}
+    <title>Alteração da Conta</title>
+{% endblock %}
+{% block content %}
+    <div class="cadastro-form">
+        <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group" role="group" aria-label="First group"></div>
+            <div class="btn-group mx-auto">
+                <a href="/dashboard/" class="btn btn-primary">Voltar</a>&nbsp;
+            </div>
+        </div>
+        <form action="/updateUser/" name="form-user" id="formUser" method="post">
+            <div>
+                {% if msg %}
+                    <div class="alert {{class}} mensagem mx-auto" id="msg">
+                        {{msg}}
+                    </div>
+                {% endif %}
+                {% csrf_token %}
+                <div class="form-icon">
+                    <span><i class="icon icon-user"></i></span>
+                </div>
+                <div class="form-group mx-auto">
+                    <strong class="text-end">Nome de Usuário ( Login )</strong>
+                    <input type="text" class="form-control item" name="name" id="name" placeholder="Nome do Usuário (login):"value="{{ name }}" readonly >
+                </div>
+                <div class="form-group mx-auto">
+                    <strong>Email</strong>
+                    <input type="text" class="form-control item" name="email" id="email" placeholder="Email do Usuário:" value="{{ email }}">
+                </div>
+                <div class="form-group mx-auto">
+                    <strong>Nome Completo</strong>
+                    <input type="text" class="form-control item" name="nome" id="nome" placeholder="Nome Completo:" value="{{ nome }}" >
+                </div>
+                <div class="form-group mx-auto">
+                    <strong>Telefone</strong>
+                    <input type="text" class="form-control item" name="telefone" id="telefone" placeholder="Telefone do Usuário com DDD:" value="{{ telefone }}" >
+                </div>
+                <div class="form-group mx-auto">
+                    <strong>Registro Funcional</strong>
+                    <input type="text" class="form-control item" name="reg_funcional" id="reg_funcional" placeholder="Registro Funcional" value="{{ reg_funcional }}" >
+                </div>
+                <div class="form-group mx-auto">
+                    <button type="submit" class="btn btn-block criar-conta">Gravar Alteração</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        $('input[name="telefone"]').mask('(00) 00000-0000');
+    </script>
+{% endblock %}

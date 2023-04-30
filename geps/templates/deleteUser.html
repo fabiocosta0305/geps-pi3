@@ -1,0 +1,38 @@
+{% extends 'main.html' %}
+{% block title %}
+    <title>Exclusão da Conta</title>
+{% endblock %}
+{% block content %}
+    <div class="cadastro-form">
+        <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group" role="group" aria-label="First group"></div>
+            <div class="btn-group mx-auto">
+                <a href="/dashboard/" class="btn btn-primary">Voltar</a>&nbsp;
+            </div>
+        </div>
+        <form action="/deleteUser/" name="form-user" id="formUser" method="post">
+            <div>
+                {% if msg %}
+                    <div class="alert {{class}} mensagem mx-auto" id="msg">
+                        {{msg}}
+                    </div>
+                {% endif %}
+                {% csrf_token %}
+                <div class="form-icon">
+                    <span><i class="icon icon-user"></i></span>
+                </div>
+                <div class="form-group mx-auto">
+                    <strong class="text-end">Nome de Usuário ( Login )</strong>
+                    <input type="text" class="form-control item" name="name" id="name" placeholder="Nome do Usuário (login):" value="{{ name }}" readonly >
+                </div>
+                <div class="form-group mx-auto">
+                    <strong>Email</strong>
+                    <input type="text" class="form-control item" name="email" id="email" placeholder="Email do Usuário:" value="{{ email }}" readonly>
+                </div>
+                <div class="form-group mx-auto">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Confirma Exclusão da Conta ?');">Excluir Conta</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

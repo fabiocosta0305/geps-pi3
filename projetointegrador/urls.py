@@ -22,7 +22,8 @@ from geps.utils.funcoes import enviandoEmail
 from geps.views import home, cadUser, insertUser, loginUser, validLoginUser, \
     dashboard, logouts, changePassword, validChangePassword, policy, cadInstituicao, \
     insertInst, formPesquisaDocente, pesquisaDocente, buscaDocente, gravaStatusDocente, \
-    formDispDocente, gravaBairrosDocente
+    formDispDocente, gravaBairrosDocente, formEditUser, updateUser, formDeleteUser, deleteUser, \
+    formEditInst, updateInst, deleteInst, formDeleteInst
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -50,4 +51,12 @@ urlpatterns = [
     path('formDispDocente/', formDispDocente),
     path('gravaBairrosDocente/', gravaBairrosDocente),
     path('enviandoEmail/', enviandoEmail, name='enviandoEmail'),
+    path('formEditUser/', formEditUser, name="formEditUser"),
+    path('updateUser/', updateUser, name="updateUser"),
+    path('formDeleteUser/', formDeleteUser, name="formDeleteUser"),
+    path('deleteUser/', deleteUser, name="deleteUser"),
+    path('formEditInst/', formEditInst, name="formEditInst"),
+    path('updateInst/', updateInst, name="updateInst"),
+    path('formDeleteInst/', formDeleteInst, name="formDeleteInst"),
+    path('deleteInst/', deleteInst, name="deleteInst"),
 ]

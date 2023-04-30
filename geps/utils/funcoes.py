@@ -1,5 +1,6 @@
 import re
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.contrib.auth import password_validation
 from django.contrib.auth.models import User
@@ -21,8 +22,12 @@ def checkEmail(email):
 
 
 # Função para validar Grupo de Usuario
-def checkGroup(user, group):
-    return user.groups.filter(name=group).exists()
+def checkGroup(usuario, grupo):
+    users_in_group = Group.objects.get(id=grupo).user_set.all()
+    if usuario in users_in_group:
+        return True
+    else:
+        return False
 
 
 # Enviando Email
