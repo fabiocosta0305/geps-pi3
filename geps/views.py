@@ -297,19 +297,23 @@ def policy(request):
 
 # Pagina de Pesquisa de Docentes
 def formPesquisaDocente(request):
-    nome_instituicao = Instituicao.objects.only('nome').get(email_responsavel=request.user.email).nome
-    data = {}
-    data['instituicao'] = True
-    data['nome_instituicao'] = nome_instituicao
-    return render(request, 'dashboard/pesquisaDocente.html', data)
+    if request.user.is_authenticated:
+        data = {}
+        nome_instituicao = Instituicao.objects.only('nome').get(email_responsavel=request.user.email).nome
+        data['instituicao'] = True
+        data['nome_instituicao'] = nome_instituicao
+        return render(request, 'dashboard/pesquisaDocente.html', data)
+    else:
+        return redirect('/dashboard/')
 
 
 # Busca dados no banco Docente
 def pesquisaDocente(request):
     data = {}
-    data['instituicao'] = True  # Envia parametro de grupo
-    if 'diaSemana' in request.POST:  # Verifica se algum check ou setado
-        dias = request.POST.getlist('diaSemana')  # Pega a lista com todos os checks
+    data['instituicao'] = True                      # Envia parametro de grupo
+    data['pesquisar'] = request.POST['pesquisar']   # Envia parametro de acionamento do botão pesquisar
+    if 'diaSemana' in request.POST:                 # Verifica se algum check ou setado
+        dias = request.POST.getlist('diaSemana')    # Pega a lista com todos os checks
         data["checks"] = dias
         # Verifica se algum check de segunda vou setado por periodo
         if 'seg_manha' in dias or 'seg_tarde' in dias or 'seg_noite' in dias:
@@ -419,7 +423,7 @@ def buscaDocente(request):
 
 # Atualiza status Docente
 def gravaStatusDocente(request):
-    if request.POST['name']:
+    if request.POST['nome_docente']:
         data = {}
         data['instituicao'] = True
         sts = 0
@@ -429,7 +433,7 @@ def gravaStatusDocente(request):
             sts = 1
         elif request.POST['validacao'] == 'bloqueado':
             sts = 2
-        Docente.objects.filter(nome=request.POST['name']).update(status=sts)
+        Docente.objects.filter(nome=request.POST['nome_docente']).update(status=sts)
         data['msg'] = 'Validação Gravada com sucesso!'
         data['class'] = 'alert-success'
         data['nome_instituicao'] = request.POST['nome_instituicao']

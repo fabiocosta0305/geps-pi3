@@ -100,6 +100,7 @@
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-primary btn-customized">Pesquisar</button>
                                     </div>
+                                    <input type="hidden" value='1' name='pesquisar'>
                                 </fieldset>
                             </fieldset>
                         </div>
@@ -107,17 +108,21 @@
                             <!-- Resultado da Pesquisa -->
                             <fieldset class="form-group p-2">
                                 <legend class="w-auto px-2"><strong>Resultado</strong></legend>
-                                <div class="form-group">
-                                    {% for dado in dados %}
-                                        <input type="submit" class="btnDocente btn btn-primary btn-customized" value='{{ dado.docente__nome }}' id='btnDocente' style="width: 250px;"><br><br>
-                                    {% endfor %}
+                                <div class="form-group" style="position: absolute;overflow-y: scroll; height: 80%;">
+                                    {% if dados %}
+                                        {% for dado in dados %}
+                                            <input type="submit" class="btnDocente btn btn-primary btn-customized" value='{{ dado.docente__nome }}' id='btnDocente' style="width: 250px;"><br><br>
+                                        {% endfor %}
+                                    {% elif pesquisar == '1' %}
+                                        <label class="w-auto px-2"><small><strong>Nenhum Docente Encontrado!</strong></small></label>
+                                    {% endif %}
                                 </div>
                             </fieldset>
                         </div>
                         <div class="col-md-5">
                             <input type="hidden" name="nome_instituicao" value="{{ nome_instituicao }}">
                 </form>
-                <form action="/gravaStatusDocente/" method="post">
+                <form action="/gravaStatusDocente/" method="post" name="formGravaStsDocente">
                     {% csrf_token %}
                             <!-- Dados do Docente -->
                             <fieldset class="form-group p-2">
@@ -202,21 +207,30 @@
     // Função ajax para gravar status docente sem refresh
     $('.btnStsDocente').click(function(e){
         e.preventDefault();
-        var nome_docente = $(#nome-docente).val();
-        var csrftoken = $("[name=csrfmiddlewaretoken]").val();
-        $.ajax({
-            url: '/gravaStatusDocente',
-            type: 'POST',
-            headers:{ "X-CSRFToken": csrftoken },
-            data: {
-                'nome_docente': nome_docente,
-            },
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            alert(textStatus + ': ' + errorThrown);
-        }).done(function (data) {
-            if(!data.hasOwnProperty('error')){
-            }
-        });
+        var nome_instituicao = document.getElementById('nome_instituicao').value;
+        var validacao = document.formGravaStsDocente.validacao.value;
+        var nome_docente = document.getElementById("nome-docente").value;
+        if(document.getElementById("nome-docente") && document.getElementById("nome-docente").value){
+            var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+            $.ajax({
+                url: '/gravaStatusDocente',
+                type: 'POST',
+                headers:{ "X-CSRFToken": csrftoken },
+                data: {
+                    'nome_docente': nome_docente,
+                    'validacao': validacao,
+                    'nome_instituicao': nome_instituicao,
+                },
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                alert(textStatus + ': ' + errorThrown);
+            }).done(function (data) {
+                if(!data.hasOwnProperty('error')){
+                    alert("Validação Gravada com Sucesso !");
+                }
+            });
+        }else{
+            alert("Docente não Selecionado !");
+        }
     });
 </script>
 <script>
