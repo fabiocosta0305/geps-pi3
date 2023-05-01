@@ -1,5 +1,6 @@
 import datetime
 import hashlib
+import logging
 import json
 
 from django import http
@@ -437,13 +438,18 @@ def gravaStatusDocente(request):
 
 
 def formDispDocente(request):
+    # logger = logging.getLogger(__name__)
     bairros = Bairro.objects.all
-    context = {'all_bairros': bairros}
+    # Obtem o docente e as disponibilidades necessarias
+    context = {'all_bairros': bairros, 'checks': obtemDisponibilidades(request)}
+    # logger.warn(context)
+
     return render(request, 'dashboard/disponibilidadeDocente.html', context)
 
 
 def gravaBairrosDocente(request):
     data = {}  # Cria objeto para retorno
+    docente = Docente.objects.filter(nome=request.user.first_name)
     bairros = Bairro.objects.all  # Busca Todos os Bairros para retornar
     data['all_bairros'] = bairros  # Alimenta o objeto com os bairros
     data['instituicao'] = False  # Controle de grupo de usuário
@@ -453,67 +459,21 @@ def gravaBairrosDocente(request):
         # Pega todos os checks de dia da semana e grava no banco
         dias = request.POST.getlist('diaSemana')
         data["checks"] = dias
-        if 'seg_manha' in dias or 'seg_tarde' in dias or 'seg_noite' in dias:
-            if 'seg_manha' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Segunda-Feira', periodo='Manhã',
-                                                                docente_id=docente)
-            if 'seg_tarde' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Segunda-Feira', periodo='Tarde',
-                                                                docente_id=docente)
-            if 'seg_noite' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Segunda-Feira', periodo='Noite',
-                                                                docente_id=docente)
-        if 'ter_manha' in dias or 'ter_tarde' in dias or 'ter_noite' in dias:
-            if 'ter_manha' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Terça-Feira', periodo='Manhã',
-                                                                docente_id=docente)
-            if 'ter_tarde' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Terça-Feira', periodo='Tarde',
-                                                                docente_id=docente)
-            if 'ter_noite' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Terça-Feira', periodo='Noite',
-                                                                docente_id=docente)
-        if 'qua_manha' in dias or 'qua_tarde' in dias or 'qua_noite' in dias:
-            if 'qua_manha' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Quarta-Feira', periodo='Manhã',
-                                                                docente_id=docente)
-            if 'qua_tarde' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Quarta-Feira', periodo='Tarde',
-                                                                docente_id=docente)
-            if 'qua_noite' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Quarta-Feira', periodo='Noite',
-                                                                docente_id=docente)
-        if 'qui_manha' in dias or 'qui_tarde' in dias or 'qui_noite' in dias:
-            if 'qui_manha' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Quinta-Feira', periodo='Manhã',
-                                                                docente_id=docente)
-            if 'qui_tarde' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Quinta-Feira', periodo='Tarde',
-                                                                docente_id=docente)
-            if 'qui_noite' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Quinta-Feira', periodo='Noite',
-                                                                docente_id=docente)
-        if 'sex_manha' in dias or 'sex_tarde' in dias or 'sex_noite' in dias:
-            if 'sex_manha' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Sexta-Feira', periodo='Manhã',
-                                                                docente_id=docente)
-            if 'sex_tarde' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Sexta-Feira', periodo='Tarde',
-                                                                docente_id=docente)
-            if 'sex_noite' in dias:
-                DisponibilidadeDocente.objects.update_or_create(diaSemana='Sexta-Feira', periodo='Noite',
-                                                                docente_id=docente)
+        configuraDisponbilidade(request,dias,docente)        
         # Pegar todos os bairros selecionados
         bairros = request.POST.getlist('bairros_selecionados')
         for bairro in bairros:
             print(bairro)
         data['msg'] = 'Dados gravados com Sucesso!'
         data['class'] = 'alert-success'
+        # data['checks'] = obtemDisponibilidades(request)
         return render(request, 'dashboard/disponibilidadeDocente.html', data)
     else:
         data['msg'] = 'Seleção de dia da Semana e Bairro são obrigatórios!'
         data['class'] = 'alert-danger'
+        data['checks'] = obtemDisponibilidades(request)
         return render(request, 'dashboard/disponibilidadeDocente.html', data)
+        
 
 
 # Formulário de Edição da Conta do Usuário
@@ -692,3 +652,29 @@ def deleteInst(request):
     user = User.objects.get(username=request.user.username)
     user.delete()
     return redirect('/home/')
+
+# Obtem a Lista da Disponibilidade de um Professor
+def obtemDisponibilidades(request):
+    docente = Docente.objects.filter(nome=request.user.first_name)
+    checks=[]
+    for disp in DisponibilidadeDocente.objects.filter(docente_id=docente.values()[0]['id']):
+        # logger.warning(dir(disp))
+        checks.append(disp.checkbox())
+    return checks
+
+# Configura a Lista da Disponibilidade de um Professor
+def configuraDisponbilidade(request, dias, docente):
+    diasSemana={'seg': 'Segunda-Feira',
+                'ter': 'Terça-Feira',
+                'qua': 'Quarta-Feira',
+                'qui': 'Quinta-Feira',
+                'sex': 'Sexta-Feira'}
+    periodosDia={'manha': 'Manhã',
+                 'tarde': 'Tarde',
+                 'noite': 'Noite'}
+    for disps in DisponibilidadeDocente.objects.filter(docente_id=docente):
+        disps.delete()
+    for meuDia in dias:
+        dia, periodo = meuDia.split("_")
+        if 'seg_manha' in dias:
+            DisponibilidadeDocente.objects.update_or_create(diaSemana=diasSemana[dia], periodo=periodosDia[periodo],docente_id=docente)
