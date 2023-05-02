@@ -18,14 +18,19 @@ class Docente(models.Model):
 class DisponibilidadeDocente(models.Model):
     objects = None
     DiaSemana = Choices (
-            ('Segunda-Feira'), ('Terça-Feira'), ('Quarta-Feira'),('Quinta-Feira'),('Sexta-Feira')
+            ('Segunda-Feira','seg'), ('Terça-Feira','ter'), ('Quarta-Feira','qua'),('Quinta-Feira','qui'),('Sexta-Feira','sex')
         )
     Periodo = Choices (
-            ('Manhã'), ('Tarde'), ('Noite')
+            ('Manhã','manha'), ('Tarde','tarde'), ('Noite','noite')
         )
     docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
     diaSemana = models.CharField(max_length=20, choices=DiaSemana)
     periodo = models.CharField(max_length=20, choices=Periodo)
+
+    def checkbox(self):
+        checkDia={'Segunda-Feira': 'seg', 'Terça-Feira':'ter', 'Quarta-Feira':'qua','Quinta-Feira':'qui','Sexta-Feira':'sex'}
+        checkPeriodo={'Manhã':'manha', 'Tarde':'tarde', 'Noite':'noite'}
+        return self.get_diaSemana_display()+'_'+self.get_periodo_display()
 
 
 # Classe com dos campos da Instituição
@@ -49,10 +54,10 @@ class Instituicao(models.Model):
 # Criando uma classe que representa a Demanda por professores
 class Demanda(models.Model):
     DiaSemana = Choices (
-            ('Segunda-Feira'), ('Terça-Feira'), ('Quarta-Feira'),('Quinta-Feira'),('Sexta-Feira')
+            ('Segunda-Feira','seg'), ('Terça-Feira','ter'), ('Quarta-Feira','qua'),('Quinta-Feira','qui'),('Sexta-Feira','sex')
         )
     Periodo = Choices (
-            ('Manhã'), ('Tarde'), ('Noite')
+            ('Manhã','manha'), ('Tarde','tarde'), ('Noite','noite')
         )
     instituicao = models.ForeignKey(Instituicao, on_delete=models.CASCADE)
     diaSemana = models.CharField(max_length=20, choices=DiaSemana)
