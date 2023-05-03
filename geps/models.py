@@ -111,8 +111,10 @@ class DisponibilidadeRegiao(models.Model):
 
     def _str_(self):
         return self.docente.nome + ' - ' + self.regiao.regiao
-    
+
+
 class DisponibilidadeBairro(models.Model):
+    objects = None
     docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
     bairro = models.ForeignKey(Bairro, on_delete=models.CASCADE)
 

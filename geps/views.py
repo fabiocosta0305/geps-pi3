@@ -13,7 +13,7 @@ from django.db.models import Q, Count
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
 
-from geps.models import Docente, Instituicao, Demanda, DisponibilidadeDocente, Bairro
+from geps.models import Docente, Instituicao, Demanda, DisponibilidadeDocente, Bairro, DisponibilidadeBairro
 from geps.utils.funcoes import checkGroup, checkEmail, checkPassword
 
 
@@ -302,6 +302,8 @@ def formPesquisaDocente(request):
     data = {}
     data['instituicao'] = True
     data['nome_instituicao'] = nome_instituicao
+    bairros = Bairro.objects.all
+    data['all_bairros'] = bairros
     return render(request, 'dashboard/pesquisaDocente.html', data)
 
 
@@ -400,12 +402,31 @@ def pesquisaDocente(request):
         # Consulta status validacao docente
         data['cons_validacao'] = request.POST['cons_validacao']
         cons_validacao = Q(docente__status=request.POST['cons_validacao'])
+        # Consulta Docente por bairro
+        id_bairro_consulta = request.POST['cons_bairro_regiao']
+        data['cons_bairro_regiao'] = id_bairro_consulta
         # Busca no banco de acordo com os dados selecionados
         filtro = DisponibilidadeDocente.objects.filter(
             (segunda | terca | quarta | quinta | sexta) & cons_validacao
-        ).values('docente__nome').annotate(Count('docente_id'))
-        data['dados'] = filtro
+        ).values('docente__id', 'docente__nome').annotate(Count('docente_id'))
+        # Filtrar por Bairro caso tenha selecionado algum
+        if id_bairro_consulta != '0':
+            for doc in filtro:
+                result_dados = DisponibilidadeBairro.objects.filter(bairro_id=id_bairro_consulta, docente_id=doc['docente__id']).values('docente__nome')
+                data['dados'] = result_dados
+            # Retorna o nome do bairro selecionado
+            cons_bairro_docente = Bairro.objects.only('nome').get(id=id_bairro_consulta).nome
+            data['retorno_bairro_nome'] = cons_bairro_docente
+        else:
+            data['dados'] = filtro
+            data['retorno_bairro_nome'] = 'Todos'
+        # Retornando nome da Instituicao
         data['nome_instituicao'] = request.POST['nome_instituicao']
+    # Retornando todos os bairros
+    bairros = Bairro.objects.all
+    data['all_bairros'] = bairros
+    # Retorna identificação de acionamento do botão pesquisar
+    data['pesquisar'] = '1'
     return render(request, 'dashboard/pesquisaDocente.html', data)
 
 
@@ -449,7 +470,6 @@ def formDispDocente(request):
 
 def gravaBairrosDocente(request):
     data = {}  # Cria objeto para retorno
-    docente = Docente.objects.filter(nome=request.user.first_name)
     bairros = Bairro.objects.all  # Busca Todos os Bairros para retornar
     data['all_bairros'] = bairros  # Alimenta o objeto com os bairros
     data['instituicao'] = False  # Controle de grupo de usuário
@@ -550,7 +570,8 @@ def deleteUser(request):
     userDocente.delete()
     user = User.objects.get(username=request.user.username)
     user.delete()
-    return redirect('/home/')
+    data = {'msg': 'Usuário Excluído com Sucesso!', 'class': 'alert-success', 'exclusao': '1'}
+    return render(request, 'deleteUser.html', data)
 
 
 # Formulário de Edição da Instituição
@@ -651,7 +672,9 @@ def deleteInst(request):
     userInst.delete()
     user = User.objects.get(username=request.user.username)
     user.delete()
-    return redirect('/home/')
+    data = {'msg': 'Instituição Excluída com Sucesso!', 'class': 'alert-success', 'exclusao': '1'}
+    return render(request, 'deleteInst.html', data)
+
 
 # Obtem a Lista da Disponibilidade de um Professor
 def obtemDisponibilidades(request):

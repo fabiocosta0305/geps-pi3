@@ -77,8 +77,8 @@
                                             <label class="form-check-label" for="sex_noite">Noite</label>
                                         </div>
                                     </fieldset>
-                                    <div>
-                                        <label><strong>Validação:</strong></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <div class="text-center">
+                                        <label><strong>Validação:</strong></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <select name="cons_validacao" class="form-select" aria-label="Default select">
                                             {% if cons_validacao == '1' %}
                                                 <option value="1" selected >Validado</option>
@@ -98,9 +98,22 @@
                                         </select>
                                     </div>
                                     <div class="text-center">
+                                        <label><strong>Bairro:</strong></label>
+                                        <select name="cons_bairro_regiao" class="form-select" aria-label="Default select" style="width: 57%;">
+                                            {% if retorno_bairro_nome %}
+                                                <option value="{{ cons_bairro_regiao }}" selected >{{ retorno_bairro_nome }}</option>
+                                                <option value="0">Todos</option>
+                                            {% else %}
+                                                <option value="0" selected >Todos</option>
+                                            {% endif %}
+                                            {% for bairro in all_bairros %}
+                                                <option value="{{ bairro.id }}">{{ bairro.nome }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="text-center">
                                         <button type="submit" class="btn btn-primary btn-customized">Pesquisar</button>
                                     </div>
-                                    <input type="hidden" value='1' name='pesquisar'>
                                 </fieldset>
                             </fieldset>
                         </div>
@@ -108,14 +121,14 @@
                             <!-- Resultado da Pesquisa -->
                             <fieldset class="form-group p-2">
                                 <legend class="w-auto px-2"><strong>Resultado</strong></legend>
-                                <div class="form-group" style="position: absolute;overflow-y: scroll; height: 80%;">
-                                    {% if dados %}
-                                        {% for dado in dados %}
-                                            <input type="submit" class="btnDocente btn btn-primary btn-customized" value='{{ dado.docente__nome }}' id='btnDocente' style="width: 250px;"><br><br>
-                                        {% endfor %}
-                                    {% elif pesquisar == '1' %}
-                                        <label class="w-auto px-2"><small><strong>Nenhum Docente Encontrado!</strong></small></label>
-                                    {% endif %}
+                                <div class="form-group" style="position: absolute;overflow-y: auto; height: 80%;">
+                                    {% for dado in dados %}
+                                        <input type="submit" class="btnDocente btn btn-primary btn-customized" value='{{ dado.docente__nome }}' id='btnDocente' style="width: 250px;"><br><br>
+                                    {% empty %}
+                                        {% if pesquisar == '1' %}
+                                            <label class="w-auto px-2"><small><strong>Nenhum Docente Encontrado!</strong></small></label>
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
                             </fieldset>
                         </div>

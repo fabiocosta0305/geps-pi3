@@ -6,11 +6,15 @@
     <div class="cadastro-form">
         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
             <div class="btn-group" role="group" aria-label="First group"></div>
-            <div class="btn-group mx-auto">
-                <a href="/dashboard/" class="btn btn-primary">Voltar</a>&nbsp;
-            </div>
+            {% if not exclusao %}
+                <div class="btn-group mx-auto">
+                    <a href="/dashboard/" class="btn btn-primary">Voltar</a>&nbsp;
+                </div>
         </div>
         <form action="/deleteInst/" name="form-user" id="formUser" method="post">
+            {% else %}
+        <form action="/home/" name="form-user" method="post">
+            {% endif %}
             <div>
                 {% if msg %}
                     <div class="alert {{class}} mensagem mx-auto" id="msg">
@@ -21,23 +25,29 @@
                 <div class="form-icon">
                     <span><i class="icon icon-user"></i></span>
                 </div>
-                <div class="form-inline">
-                    <input type="text" class="form-control item" name="name" id="name" placeholder="Nome da Instituição:" value="{{ name }}" style="width:100%" readonly >
-                </div>
-                <br>
-                <div class="form-inline">
-                    <input type="text" class="form-control item" name="nome_resp" id="nome_resp" placeholder="Nome Completo do Responsável:" value="{{ nome_resp }}" style="width:60%" readonly >
-                    <input type="text" class="form-control item" name="name_resp" id="name_resp" placeholder="Nome de Usuário do Responsável:" value="{{ name_resp }}" style="width:40%" readonly >
-                </div>
-                <br>
-                <div class="form-inline">
-                    <input type="text" class="form-control item" name="email_resp" id="email_resp" placeholder="Email do Responsável:" value="{{ email_resp }}" style="width:60%" readonly >
-                    <input type="text" class="form-control item" name="telefone_resp" id="telefone_resp" placeholder="Tel. do Responsável com DDD:" value="{{ telefone_resp }}" style="width:40%" readonly >
-                </div>
-                <br>
-                <div class="form-group mx-auto">
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Confirma Exclusão da Conta ?');">Excluir Conta</button>
-                </div>
+                {% if not exclusao %}
+                    <div class="form-inline">
+                        <input type="text" class="form-control item" name="name" id="name" placeholder="Nome da Instituição:" value="{{ name }}" style="width:100%" readonly >
+                    </div>
+                    <br>
+                    <div class="form-inline">
+                        <input type="text" class="form-control item" name="nome_resp" id="nome_resp" placeholder="Nome Completo do Responsável:" value="{{ nome_resp }}" style="width:60%" readonly >
+                        <input type="text" class="form-control item" name="name_resp" id="name_resp" placeholder="Nome de Usuário do Responsável:" value="{{ name_resp }}" style="width:40%" readonly >
+                    </div>
+                    <br>
+                    <div class="form-inline">
+                        <input type="text" class="form-control item" name="email_resp" id="email_resp" placeholder="Email do Responsável:" value="{{ email_resp }}" style="width:60%" readonly >
+                        <input type="text" class="form-control item" name="telefone_resp" id="telefone_resp" placeholder="Tel. do Responsável com DDD:" value="{{ telefone_resp }}" style="width:40%" readonly >
+                    </div>
+                    <br>
+                    <div class="form-group mx-auto">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Confirma Exclusão da Conta ?');">Excluir Conta</button>
+                    </div>
+                {% else %}
+                    <div class="form-group mx-auto">
+                        <button type="submit" class="btn btn-primary">OK</button>
+                    </div>
+                {% endif %}
             </div>
         </form>
     </div>
