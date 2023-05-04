@@ -10,7 +10,7 @@
                         {{msg}}
                     </div>
                 {% endif %}
-                <form action="/gravaBairrosDocente/" method="post">
+                <form action="/gravaBairrosDocente/" method="post" onclick="return formVal();">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-4">
@@ -112,7 +112,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <button type="submit" class="btn btn-primary btn-customized">Gravar</button>
+                        <button id="enviar" type="submit" class="btn btn-primary btn-customized">Gravar</button>
                     </div>
                 </form>
             </div>
@@ -137,6 +137,22 @@
     $('#bairros_selecionados').dblclick(function() {
         var id_bairro = $(this).val();
         $('#bairros_selecionados').children('option[value="' + id_bairro + '"]').remove();
+    });
+    $(document).ready(function(){
+        $('#enviar').click(function(event){
+            var selectedBairros = $('#bairros_selecionados').val();
+            if (!isArray(selectedBairros) || !array.lenght )
+            {
+                event.preventDefault();
+                alert("Escolha ao menos um bairro");
+            }
+            else 
+            {
+                $("#bairros_selecionados").find("option").each(function() {
+                    $(this).attr('selected', true);
+                });
+            }
+        });
     });
 </script>
 {% endblock %}
