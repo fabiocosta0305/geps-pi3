@@ -462,7 +462,10 @@ def formDispDocente(request):
     # logger = logging.getLogger(__name__)
     bairros = Bairro.objects.all
     # Obtem o docente e as disponibilidades necessarias
-    context = {'all_bairros': bairros, 'checks': obtemDisponibilidades(request)}
+    # logger = logger.warning(bairros)
+    context = {'all_bairros': bairros, 
+               'checks': obtemDisponibilidades(request), 
+               'all_bairros_selecionados': obtemBairros(request)}
     # logger.warn(context)
 
     return render(request, 'dashboard/disponibilidadeDocente.html', context)
@@ -478,20 +481,24 @@ def gravaBairrosDocente(request):
     if ('diaSemana' in request.POST) and ('bairros_selecionados' in request.POST):
         # Pega todos os checks de dia da semana e grava no banco
         dias = request.POST.getlist('diaSemana')
+        bairros_selecionados = request.POST.getlist('bairros_selecionados')
         data["checks"] = dias
-        configuraDisponbilidade(request,dias,docente)        
+        configuraDisponbilidade(request,dias,docente)
+        configuraBairros(request,bairros_selecionados,docente)
+        # logger = logging.getLogger(__name__)
+        # logger.warning(bairros)
         # Pegar todos os bairros selecionados
         bairros = request.POST.getlist('bairros_selecionados')
-        for bairro in bairros:
-            print(bairro)
         data['msg'] = 'Dados gravados com Sucesso!'
         data['class'] = 'alert-success'
+        data['all_bairros_selecionados']=obtemBairros(request)
         # data['checks'] = obtemDisponibilidades(request)
         return render(request, 'dashboard/disponibilidadeDocente.html', data)
     else:
         data['msg'] = 'Seleção de dia da Semana e Bairro são obrigatórios!'
         data['class'] = 'alert-danger'
         data['checks'] = obtemDisponibilidades(request)
+        data['all_bairros_selecionados']=obtemBairros(request)
         return render(request, 'dashboard/disponibilidadeDocente.html', data)
         
 
@@ -685,6 +692,21 @@ def obtemDisponibilidades(request):
         checks.append(disp.checkbox())
     return checks
 
+def obtemBairros(request):
+    docente = Docente.objects.filter(nome=request.user.first_name)
+    checks=[]
+    for disp in DisponibilidadeBairro.objects.filter(docente_id=docente.values()[0]['id']):
+        meuBairro=[]
+        # logger = logging.getLogger(__name__)
+        # logger.warning(disp.bairro_id)
+        meuBairroObj=Bairro.objects.filter(id=disp.bairro_id)
+        # logger.warning(meuBairroObj.values()[0])
+        # meuBairro['id']=meuBairroObj.values()[0]['id']
+        # meuBairro['nome']=meuBairroObj.values()[0]['nome']
+        checks.append(meuBairroObj.values()[0])
+    # logger.warning(checks)
+    return checks
+
 # Configura a Lista da Disponibilidade de um Professor
 def configuraDisponbilidade(request, dias, docente):
     diasSemana={'seg': 'Segunda-Feira',
@@ -700,3 +722,9 @@ def configuraDisponbilidade(request, dias, docente):
     for meuDia in dias:
         dia, periodo = meuDia.split("_")
         DisponibilidadeDocente.objects.update_or_create(diaSemana=diasSemana[dia], periodo=periodosDia[periodo],docente_id=docente)
+
+def configuraBairros(request,bairros,docente):
+    for disps in DisponibilidadeBairro.objects.filter(docente_id=docente):
+        disps.delete()
+    for meuBairro in bairros:
+        DisponibilidadeBairro.objects.update_or_create(bairro_id=meuBairro, docente_id=docente)
