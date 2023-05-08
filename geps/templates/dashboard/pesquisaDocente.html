@@ -223,10 +223,8 @@
         var nome_instituicao = document.getElementById('nome_instituicao').value;
         var validacao = document.formGravaStsDocente.validacao.value;
         var nome_docente = document.getElementById("nome-docente").value;
+        var email = document.getElementById("email-docente").value;
         if(document.getElementById("nome-docente") && document.getElementById("nome-docente").value){
-            alert('inst: ' + nome_instituicao);
-            alert('validacao: ' + validacao);
-            alert('docente: ' + nome_docente);
             var csrftoken = $("[name=csrfmiddlewaretoken]").val();
             $.ajax({
                 url: '/gravaStatusDocente',
@@ -236,6 +234,7 @@
                     'nome_docente': nome_docente,
                     'validacao': validacao,
                     'nome_instituicao': nome_instituicao,
+                    'email': email,
                 },
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 alert(textStatus + ': ' + errorThrown);
