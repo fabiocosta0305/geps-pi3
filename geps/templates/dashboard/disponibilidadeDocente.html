@@ -123,15 +123,19 @@
     $('#bairro').change(function(){
         var id_bairro = $(this).val();
         var selectedBairros = $('#bairros_selecionados').val();
-        var txt_bairro = $('option:selected', this).text();
-        if (!selectedBairros.includes(id_bairro.toString()))
-        {
-           $('#bairros_selecionados').append($('<option>', {
-                value: id_bairro,
-                text: txt_bairro,
-                selected: true
-            }));
-        }
+        var txt_bairro = $('option:selected', this).val();
+
+        id_bairro.forEach ( function(element, index) {
+            // var esse_bairro = $(this).children('option[value="' + element + '"]');
+            if (!selectedBairros.includes(element.toString()))
+            {
+               $('#bairros_selecionados').append($('<option>', {
+                    value: element,
+                    text: $("#bairro option[value='" + element + "']").text(),
+                    selected: true
+                }));
+            }
+        });
     });
     $('#bairros_selecionados').dblclick(function() {
         var id_bairro = $(this).val();
