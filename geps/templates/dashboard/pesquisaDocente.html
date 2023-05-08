@@ -223,6 +223,7 @@
         var nome_instituicao = document.getElementById('nome_instituicao').value;
         var validacao = document.formGravaStsDocente.validacao.value;
         var nome_docente = document.getElementById("nome-docente").value;
+        var email = document.getElementById("email-docente").value;
         if(document.getElementById("nome-docente") && document.getElementById("nome-docente").value){
             var csrftoken = $("[name=csrfmiddlewaretoken]").val();
             $.ajax({
@@ -233,6 +234,7 @@
                     'nome_docente': nome_docente,
                     'validacao': validacao,
                     'nome_instituicao': nome_instituicao,
+                    'email': email,
                 },
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 alert(textStatus + ': ' + errorThrown);

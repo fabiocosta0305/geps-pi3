@@ -441,21 +441,26 @@ def buscaDocente(request):
 
 # Atualiza status Docente
 def gravaStatusDocente(request):
-    if request.POST['name']:
-        data = {}
-        data['instituicao'] = True
-        sts = 0
-        if request.POST['validacao'] == 'nao_validao':
+    data = {}
+    data['instituicao'] = True
+    sts = 0
+    if request.POST['email']:
+        if request.POST['validacao'] == 'nao_validado':
             sts = 0
         elif request.POST['validacao'] == 'validado':
             sts = 1
         elif request.POST['validacao'] == 'bloqueado':
             sts = 2
-        Docente.objects.filter(nome=request.POST['name']).update(status=sts)
+        Docente.objects.filter(email=request.POST['email']).update(status=sts)
         data['msg'] = 'Validação Gravada com sucesso!'
         data['class'] = 'alert-success'
         data['nome_instituicao'] = request.POST['nome_instituicao']
         return render(request, 'dashboard/pesquisaDocente.html', data)
+    else:
+        data['msg'] = 'Erro na Gravação da Validação!'
+        data['class'] = 'alert-danger'
+        return render(request, 'dashboard/pesquisaDocente.html', data)
+
 
 
 def formDispDocente(request):
