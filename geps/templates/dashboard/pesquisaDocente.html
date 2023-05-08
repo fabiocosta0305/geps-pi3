@@ -224,6 +224,9 @@
         var validacao = document.formGravaStsDocente.validacao.value;
         var nome_docente = document.getElementById("nome-docente").value;
         if(document.getElementById("nome-docente") && document.getElementById("nome-docente").value){
+            alert('inst: ' + nome_instituicao);
+            alert('validacao: ' + validacao);
+            alert('docente: ' + nome_docente);
             var csrftoken = $("[name=csrfmiddlewaretoken]").val();
             $.ajax({
                 url: '/gravaStatusDocente',

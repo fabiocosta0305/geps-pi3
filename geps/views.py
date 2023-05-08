@@ -441,7 +441,7 @@ def buscaDocente(request):
 
 # Atualiza status Docente
 def gravaStatusDocente(request):
-    if request.POST['name']:
+    if request.user.username:
         data = {}
         data['instituicao'] = True
         sts = 0
@@ -451,7 +451,7 @@ def gravaStatusDocente(request):
             sts = 1
         elif request.POST['validacao'] == 'bloqueado':
             sts = 2
-        Docente.objects.filter(nome=request.POST['name']).update(status=sts)
+        Docente.objects.filter(nome=request.user.username).update(status=sts)
         data['msg'] = 'Validação Gravada com sucesso!'
         data['class'] = 'alert-success'
         data['nome_instituicao'] = request.POST['nome_instituicao']
