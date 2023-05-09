@@ -47,7 +47,7 @@ urlpatterns = [
     path('formPesquisaDocente/', formPesquisaDocente),
     path('pesquisaDocente/', pesquisaDocente),
     path('buscaDocente', buscaDocente, name='buscaDocente'),
-    path('gravaStatusDocente/', gravaStatusDocente),
+    path('gravaStatusDocente', gravaStatusDocente),
     path('formDispDocente/', formDispDocente),
     path('gravaBairrosDocente/', gravaBairrosDocente),
     path('enviandoEmail/', enviandoEmail, name='enviandoEmail'),

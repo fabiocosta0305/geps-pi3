@@ -87,7 +87,7 @@
                                 <div class="form-group">
                                     <select multiple class="form-control" id="bairro" name="bairro" style="height:500px;line-height:500px;padding:6px;">
                                         {% for bairro in all_bairros %}
-                                            <option value="{{ bairro.id }}">{{ bairro.nome }}</option>
+                                                <option value="{{ bairro.id }}">{{ bairro.nome }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -99,6 +99,12 @@
                                 <legend class="w-auto px-3"><strong>Bairros Selecionados</strong></legend>
                                 <div class="form-group">
                                     <select multiple class="form-control bairro_sel" id="bairros_selecionados" name="bairros_selecionados" style="height:500px;line-height:500px;padding:6px;">
+                                        {% if all_bairros_selecionados %}
+                                            {% for bairros_selecionados in all_bairros_selecionados %}
+                                                <!--- {{ bairros_selecionados }} -->
+                                                <option value="{{ bairros_selecionados.id }}" selected="selected">{{ bairros_selecionados.nome }}</option>
+                                            {% endfor %}
+                                        {% endif %}
                                     </select>
                                 </div>
                             </fieldset>
@@ -106,7 +112,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <button type="submit" class="btn btn-primary btn-customized">Gravar</button>
+                        <button id="enviar" type="submit" class="btn btn-primary btn-customized">Gravar</button>
                     </div>
                 </form>
             </div>
@@ -116,16 +122,25 @@
 <script>
     $('#bairro').change(function(){
         var id_bairro = $(this).val();
-        var txt_bairro = $('option:selected', this).text();
-        $('#bairros_selecionados').append($('<option>', {
-            value: id_bairro,
-            text: txt_bairro,
-            selected: true
-        }));
+        var selectedBairros = $('#bairros_selecionados').val();
+        var txt_bairro = $('option:selected', this).val();
+
+        id_bairro.forEach ( function(element, index) {
+            // var esse_bairro = $(this).children('option[value="' + element + '"]');
+            if (!selectedBairros.includes(element.toString()))
+            {
+               $('#bairros_selecionados').append($('<option>', {
+                    value: element,
+                    text: $("#bairro option[value='" + element + "']").text(),
+                    selected: true
+                }));
+            }
+        });
     });
     $('#bairros_selecionados').dblclick(function() {
         var id_bairro = $(this).val();
         $('#bairros_selecionados').children('option[value="' + id_bairro + '"]').remove();
+        $("#bairros_selecionados").children("option").prop('selected', true);
     });
 </script>
 {% endblock %}

@@ -1,5 +1,6 @@
 import datetime
 import hashlib
+import operator
 import logging
 import json
 
@@ -13,7 +14,7 @@ from django.db.models import Q, Count
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
 
-from geps.models import Docente, Instituicao, Demanda, DisponibilidadeDocente, Bairro
+from geps.models import Docente, Instituicao, Demanda, DisponibilidadeDocente, Bairro, DisponibilidadeBairro
 from geps.utils.funcoes import checkGroup, checkEmail, checkPassword
 
 
@@ -302,6 +303,8 @@ def formPesquisaDocente(request):
     data = {}
     data['instituicao'] = True
     data['nome_instituicao'] = nome_instituicao
+    bairros = Bairro.objects.all
+    data['all_bairros'] = bairros
     return render(request, 'dashboard/pesquisaDocente.html', data)
 
 
@@ -400,12 +403,31 @@ def pesquisaDocente(request):
         # Consulta status validacao docente
         data['cons_validacao'] = request.POST['cons_validacao']
         cons_validacao = Q(docente__status=request.POST['cons_validacao'])
+        # Consulta Docente por bairro
+        id_bairro_consulta = request.POST['cons_bairro_regiao']
+        data['cons_bairro_regiao'] = id_bairro_consulta
         # Busca no banco de acordo com os dados selecionados
         filtro = DisponibilidadeDocente.objects.filter(
             (segunda | terca | quarta | quinta | sexta) & cons_validacao
-        ).values('docente__nome').annotate(Count('docente_id'))
-        data['dados'] = filtro
+        ).values('docente__id', 'docente__nome').annotate(Count('docente_id'))
+        # Filtrar por Bairro caso tenha selecionado algum
+        if id_bairro_consulta != '0':
+            for doc in filtro:
+                result_dados = DisponibilidadeBairro.objects.filter(bairro_id=id_bairro_consulta, docente_id=doc['docente__id']).values('docente__nome')
+                data['dados'] = result_dados
+            # Retorna o nome do bairro selecionado
+            cons_bairro_docente = Bairro.objects.only('nome').get(id=id_bairro_consulta).nome
+            data['retorno_bairro_nome'] = cons_bairro_docente
+        else:
+            data['dados'] = filtro
+            data['retorno_bairro_nome'] = 'Todos'
+        # Retornando nome da Instituicao
         data['nome_instituicao'] = request.POST['nome_instituicao']
+    # Retornando todos os bairros
+    bairros = Bairro.objects.all
+    data['all_bairros'] = bairros
+    # Retorna identificação de acionamento do botão pesquisar
+    data['pesquisar'] = '1'
     return render(request, 'dashboard/pesquisaDocente.html', data)
 
 
@@ -420,28 +442,36 @@ def buscaDocente(request):
 
 # Atualiza status Docente
 def gravaStatusDocente(request):
-    if request.POST['name']:
-        data = {}
-        data['instituicao'] = True
-        sts = 0
-        if request.POST['validacao'] == 'nao_validao':
+    data = {}
+    data['instituicao'] = True
+    sts = 0
+    if request.POST['email']:
+        if request.POST['validacao'] == 'nao_validado':
             sts = 0
         elif request.POST['validacao'] == 'validado':
             sts = 1
         elif request.POST['validacao'] == 'bloqueado':
             sts = 2
-        Docente.objects.filter(nome=request.POST['name']).update(status=sts)
+        Docente.objects.filter(email=request.POST['email']).update(status=sts)
         data['msg'] = 'Validação Gravada com sucesso!'
         data['class'] = 'alert-success'
         data['nome_instituicao'] = request.POST['nome_instituicao']
         return render(request, 'dashboard/pesquisaDocente.html', data)
+    else:
+        data['msg'] = 'Erro na Gravação da Validação!'
+        data['class'] = 'alert-danger'
+        return render(request, 'dashboard/pesquisaDocente.html', data)
+
 
 
 def formDispDocente(request):
     # logger = logging.getLogger(__name__)
     bairros = Bairro.objects.all
     # Obtem o docente e as disponibilidades necessarias
-    context = {'all_bairros': bairros, 'checks': obtemDisponibilidades(request)}
+    # logger = logger.warning(bairros)
+    context = {'all_bairros': bairros, 
+               'checks': obtemDisponibilidades(request), 
+               'all_bairros_selecionados': obtemBairros(request)}
     # logger.warn(context)
 
     return render(request, 'dashboard/disponibilidadeDocente.html', context)
@@ -458,20 +488,24 @@ def gravaBairrosDocente(request):
     if ('diaSemana' in request.POST) and ('bairros_selecionados' in request.POST):
         # Pega todos os checks de dia da semana e grava no banco
         dias = request.POST.getlist('diaSemana')
+        bairros_selecionados = request.POST.getlist('bairros_selecionados')
         data["checks"] = dias
-        configuraDisponbilidade(request,dias,docente)        
+        configuraDisponbilidade(request,dias,docente)
+        configuraBairros(request,bairros_selecionados,docente)
+        # logger = logging.getLogger(__name__)
+        # logger.warning(bairros)
         # Pegar todos os bairros selecionados
         bairros = request.POST.getlist('bairros_selecionados')
-        for bairro in bairros:
-            print(bairro)
         data['msg'] = 'Dados gravados com Sucesso!'
         data['class'] = 'alert-success'
+        data['all_bairros_selecionados']=obtemBairros(request)
         # data['checks'] = obtemDisponibilidades(request)
         return render(request, 'dashboard/disponibilidadeDocente.html', data)
     else:
         data['msg'] = 'Seleção de dia da Semana e Bairro são obrigatórios!'
         data['class'] = 'alert-danger'
         data['checks'] = obtemDisponibilidades(request)
+        data['all_bairros_selecionados']=obtemBairros(request)
         return render(request, 'dashboard/disponibilidadeDocente.html', data)
         
 
@@ -550,7 +584,8 @@ def deleteUser(request):
     userDocente.delete()
     user = User.objects.get(username=request.user.username)
     user.delete()
-    return redirect('/home/')
+    data = {'msg': 'Usuário Excluído com Sucesso!', 'class': 'alert-success', 'exclusao': '1'}
+    return render(request, 'deleteUser.html', data)
 
 
 # Formulário de Edição da Instituição
@@ -651,7 +686,9 @@ def deleteInst(request):
     userInst.delete()
     user = User.objects.get(username=request.user.username)
     user.delete()
-    return redirect('/home/')
+    data = {'msg': 'Instituição Excluída com Sucesso!', 'class': 'alert-success', 'exclusao': '1'}
+    return render(request, 'deleteInst.html', data)
+
 
 # Obtem a Lista da Disponibilidade de um Professor
 def obtemDisponibilidades(request):
@@ -660,6 +697,22 @@ def obtemDisponibilidades(request):
     for disp in DisponibilidadeDocente.objects.filter(docente_id=docente.values()[0]['id']):
         # logger.warning(dir(disp))
         checks.append(disp.checkbox())
+    return checks
+
+def obtemBairros(request):
+    docente = Docente.objects.filter(nome=request.user.first_name)
+    checks=[]
+    for disp in DisponibilidadeBairro.objects.filter(docente_id=docente.values()[0]['id']).order_by('bairro_id'):
+        meuBairro=[]
+        # logger = logging.getLogger(__name__)
+        # logger.warning(disp.bairro_id)
+        meuBairroObj=Bairro.objects.filter(id=disp.bairro_id)
+        # logger.warning(meuBairroObj.values()[0])
+        # meuBairro['id']=meuBairroObj.values()[0]['id']
+        # meuBairro['nome']=meuBairroObj.values()[0]['nome']
+        checks.append(meuBairroObj.values()[0])
+    # logger.warning(checks)
+    checks.sort(key=operator.itemgetter('nome'))
     return checks
 
 # Configura a Lista da Disponibilidade de um Professor
@@ -676,5 +729,10 @@ def configuraDisponbilidade(request, dias, docente):
         disps.delete()
     for meuDia in dias:
         dia, periodo = meuDia.split("_")
-        if 'seg_manha' in dias:
-            DisponibilidadeDocente.objects.update_or_create(diaSemana=diasSemana[dia], periodo=periodosDia[periodo],docente_id=docente)
+        DisponibilidadeDocente.objects.update_or_create(diaSemana=diasSemana[dia], periodo=periodosDia[periodo],docente_id=docente)
+
+def configuraBairros(request,bairros,docente):
+    for disps in DisponibilidadeBairro.objects.filter(docente_id=docente):
+        disps.delete()
+    for meuBairro in bairros:
+        DisponibilidadeBairro.objects.update_or_create(bairro_id=meuBairro, docente_id=docente)
