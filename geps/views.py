@@ -1,5 +1,6 @@
 import datetime
 import hashlib
+import operator
 import logging
 import json
 
@@ -700,7 +701,7 @@ def obtemDisponibilidades(request):
 def obtemBairros(request):
     docente = Docente.objects.filter(nome=request.user.first_name)
     checks=[]
-    for disp in DisponibilidadeBairro.objects.filter(docente_id=docente.values()[0]['id']):
+    for disp in DisponibilidadeBairro.objects.filter(docente_id=docente.values()[0]['id']).order_by('bairro_id'):
         meuBairro=[]
         # logger = logging.getLogger(__name__)
         # logger.warning(disp.bairro_id)
@@ -710,6 +711,7 @@ def obtemBairros(request):
         # meuBairro['nome']=meuBairroObj.values()[0]['nome']
         checks.append(meuBairroObj.values()[0])
     # logger.warning(checks)
+    checks.sort(key=operator.itemgetter('nome'))
     return checks
 
 # Configura a Lista da Disponibilidade de um Professor
