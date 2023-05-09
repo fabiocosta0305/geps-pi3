@@ -710,7 +710,7 @@ def obtemBairros(request):
         # meuBairro['nome']=meuBairroObj.values()[0]['nome']
         checks.append(meuBairroObj.values()[0])
     # logger.warning(checks)
-    return checks
+    return checks.sort()
 
 # Configura a Lista da Disponibilidade de um Professor
 def configuraDisponbilidade(request, dias, docente):
