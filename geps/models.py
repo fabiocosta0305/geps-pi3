@@ -112,6 +112,13 @@ class DisponibilidadeRegiao(models.Model):
     def _str_(self):
         return self.docente.nome + ' - ' + self.regiao.regiao
 
+    class Meta:
+        constraints = [ 
+                        models.UniqueConstraint(
+                            fields=['docente','regiao'],
+                            name="docente_regiao"
+                        )
+                      ]
 
 class DisponibilidadeBairro(models.Model):
     objects = None
@@ -120,3 +127,11 @@ class DisponibilidadeBairro(models.Model):
 
     def _str_(self):
         return self.docente.nome + ' - ' + self.regiao.bairro
+    
+    class Meta:
+        constraints = [ 
+                        models.UniqueConstraint(
+                            fields=['docente','bairro'],
+                            name="docente_bairro"
+                        )
+                      ]
