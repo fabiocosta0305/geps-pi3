@@ -1,5 +1,6 @@
 import datetime
 import hashlib
+import operator
 import logging
 import json
 
@@ -441,21 +442,26 @@ def buscaDocente(request):
 
 # Atualiza status Docente
 def gravaStatusDocente(request):
-    if request.POST['name']:
-        data = {}
-        data['instituicao'] = True
-        sts = 0
-        if request.POST['validacao'] == 'nao_validao':
+    data = {}
+    data['instituicao'] = True
+    sts = 0
+    if request.POST['email']:
+        if request.POST['validacao'] == 'nao_validado':
             sts = 0
         elif request.POST['validacao'] == 'validado':
             sts = 1
         elif request.POST['validacao'] == 'bloqueado':
             sts = 2
-        Docente.objects.filter(nome=request.POST['name']).update(status=sts)
+        Docente.objects.filter(email=request.POST['email']).update(status=sts)
         data['msg'] = 'Validação Gravada com sucesso!'
         data['class'] = 'alert-success'
         data['nome_instituicao'] = request.POST['nome_instituicao']
         return render(request, 'dashboard/pesquisaDocente.html', data)
+    else:
+        data['msg'] = 'Erro na Gravação da Validação!'
+        data['class'] = 'alert-danger'
+        return render(request, 'dashboard/pesquisaDocente.html', data)
+
 
 
 def formDispDocente(request):
@@ -695,7 +701,7 @@ def obtemDisponibilidades(request):
 def obtemBairros(request):
     docente = Docente.objects.filter(nome=request.user.first_name)
     checks=[]
-    for disp in DisponibilidadeBairro.objects.filter(docente_id=docente.values()[0]['id']):
+    for disp in DisponibilidadeBairro.objects.filter(docente_id=docente.values()[0]['id']).order_by('bairro_id'):
         meuBairro=[]
         # logger = logging.getLogger(__name__)
         # logger.warning(disp.bairro_id)
@@ -705,6 +711,7 @@ def obtemBairros(request):
         # meuBairro['nome']=meuBairroObj.values()[0]['nome']
         checks.append(meuBairroObj.values()[0])
     # logger.warning(checks)
+    checks.sort(key=operator.itemgetter('nome'))
     return checks
 
 # Configura a Lista da Disponibilidade de um Professor
