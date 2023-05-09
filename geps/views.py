@@ -479,6 +479,7 @@ def formDispDocente(request):
 
 def gravaBairrosDocente(request):
     data = {}  # Cria objeto para retorno
+    docente = Docente.objects.filter(nome=request.user.first_name)
     bairros = Bairro.objects.all  # Busca Todos os Bairros para retornar
     data['all_bairros'] = bairros  # Alimenta o objeto com os bairros
     data['instituicao'] = False  # Controle de grupo de usuário
