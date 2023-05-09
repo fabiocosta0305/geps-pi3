@@ -123,7 +123,9 @@
                                 <legend class="w-auto px-2"><strong>Resultado</strong></legend>
                                 <div class="form-group" style="position: absolute;overflow-y: auto; height: 80%;">
                                     {% for dado in dados %}
-                                        <input type="submit" class="btnDocente btn btn-primary btn-customized" value='{{ dado.docente__nome }}' id='btnDocente' style="width: 250px;"><br><br>
+                                        {% for dad in dado %}
+                                            <input type="submit" class="btnDocente btn btn-primary btn-customized" value='{{ dad }}' id='btnDocente' style="width: 250px;"><br><br>
+                                        {% endfor %}
                                     {% empty %}
                                         {% if pesquisar == '1' %}
                                             <label class="w-auto px-2"><small><strong>Nenhum Docente Encontrado!</strong></small></label>

@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.password_validation import validate_password
 from django.core.serializers import serialize
+from django.db import connection
 from django.shortcuts import render, redirect
 from django.db.models import Q, Count
 from django.template.loader import render_to_string
@@ -317,112 +318,212 @@ def pesquisaDocente(request):
         data["checks"] = dias
         # Verifica se algum check de segunda vou setado por periodo
         if 'seg_manha' in dias or 'seg_tarde' in dias or 'seg_noite' in dias:
-            if 'seg_manha' in dias:
-                periodo_manha = Q(periodo__contains='Manhã')
+            qtd_periodo = 0
+            if 'seg_manha' in dias: qtd_periodo = qtd_periodo + 1
+            if 'seg_tarde' in dias: qtd_periodo = qtd_periodo + 1
+            if 'seg_noite' in dias: qtd_periodo = qtd_periodo + 1
+            # Verifica aual periodo foi selecionado
+            if qtd_periodo > 0:
+                segunda = ''
+                if qtd_periodo > 1:
+                    if qtd_periodo > 2:
+                        segunda = '((diaSemana=\'Segunda-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Tarde\') OR (periodo=\'Noite\'))'
+                    else:
+                        if 'seg_manha' in dias and 'seg_tarde' in dias:
+                            segunda = '((diaSemana=\'Segunda-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Tarde\'))'
+                        if 'seg_manha' in dias and 'seg_noite' in dias:
+                            segunda = '((diaSemana=\'Segunda-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Noite\'))'
+                        if 'seg_tarde' in dias and 'seg_noite' in dias:
+                            segunda = '((diaSemana=\'Segunda-Feira\') AND (periodo=\'Tarde\') OR (periodo=\'Noite\'))'
+                else:
+                    if 'seg_manha' in dias:
+                        segunda = '((diaSemana=\'Segunda-Feira\') AND (periodo=\'Manhã\'))'
+                    if 'seg_tarde' in dias:
+                        segunda = '((diaSemana=\'Segunda-Feira\') AND (periodo=\'Tarde\'))'
+                    if 'seg_noite' in dias:
+                        segunda = '((diaSemana=\'Segunda-Feira\') AND (periodo=\'Noite\'))'
             else:
-                periodo_manha = Q()
-            if 'seg_tarde' in dias:
-                periodo_tarde = Q(periodo__contains='Tarde')
-            else:
-                periodo_tarde = Q()
-            if 'seg_noite' in dias:
-                periodo_noite = Q(periodo__contains='Noite')
-            else:
-                periodo_noite = Q()
-            segunda = Q(diaSemana__contains='Segunda-Feira') & (periodo_manha | periodo_tarde | periodo_noite)
+                segunda = ''
         else:
-            segunda = Q()
+            segunda = ''
         # Verifica se algum check de terça vou setado por periodo
         if 'ter_manha' in dias or 'ter_tarde' in dias or 'ter_noite' in dias:
-            if 'ter_manha' in dias:
-                periodo_manha = Q(periodo__contains='Manhã')
+            qtd_periodo = 0
+            if 'ter_manha' in dias: qtd_periodo = qtd_periodo + 1
+            if 'ter_tarde' in dias: qtd_periodo = qtd_periodo + 1
+            if 'ter_noite' in dias: qtd_periodo = qtd_periodo + 1
+            # Verifica aual periodo foi selecionado
+            if qtd_periodo > 0:
+                terca = ''
+                if qtd_periodo > 1:
+                    if qtd_periodo > 2:
+                        terca = '((diaSemana=\'Terça-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Tarde\') OR (periodo=\'Noite\'))'
+                    else:
+                        if 'ter_manha' in dias and 'ter_tarde' in dias:
+                            terca = '((diaSemana=\'Terça-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Tarde\'))'
+                        if 'ter_manha' in dias and 'ter_noite' in dias:
+                            terca = '((diaSemana=\'Terça-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Noite\'))'
+                        if 'ter_tarde' in dias and 'ter_noite' in dias:
+                            terca = '((diaSemana=\'Terça-Feira\') AND (periodo=\'Tarde\') OR (periodo=\'Noite\'))'
+                else:
+                    if 'ter_manha' in dias:
+                        terca = '((diaSemana=\'Terça-Feira\') AND (periodo=\'Manhã\'))'
+                    if 'ter_tarde' in dias:
+                        terca = '((diaSemana=\'Terça-Feira\') AND (periodo=\'Tarde\'))'
+                    if 'ter_noite' in dias:
+                        terca = '((diaSemana=\'Terça-Feira\') AND (periodo=\'Noite\'))'
             else:
-                periodo_manha = Q()
-            if 'ter_tarde' in dias:
-                periodo_tarde = Q(periodo__contains='Tarde')
-            else:
-                periodo_tarde = Q()
-            if 'ter_noite' in dias:
-                periodo_noite = Q(periodo__contains='Noite')
-            else:
-                periodo_noite = Q()
-            terca = Q(diaSemana__contains='Terca-Feira') & (periodo_manha | periodo_tarde | periodo_noite)
+                terca = ''
         else:
-            terca = Q()
+            terca = ''
         # Verifica se algum check de quarta vou setado por periodo
         if 'qua_manha' in dias or 'qua_tarde' in dias or 'qua_noite' in dias:
-            if 'qua_manha' in dias:
-                periodo_manha = Q(periodo__contains='Manhã')
+            qtd_periodo = 0
+            if 'qua_manha' in dias: qtd_periodo = qtd_periodo + 1
+            if 'qua_tarde' in dias: qtd_periodo = qtd_periodo + 1
+            if 'qua_noite' in dias: qtd_periodo = qtd_periodo + 1
+            # Verifica aual periodo foi selecionado
+            if qtd_periodo > 0:
+                quarta = ''
+                if qtd_periodo > 1:
+                    if qtd_periodo > 2:
+                        quarta = '((diaSemana=\'Quarta-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Tarde\') OR (periodo=\'Noite\'))'
+                    else:
+                        if 'qua_manha' in dias and 'qua_tarde' in dias:
+                            quarta = '((diaSemana=\'Quarta-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Tarde\'))'
+                        if 'qua_manha' in dias and 'qua_noite' in dias:
+                            quarta = '((diaSemana=\'Quarta-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Noite\'))'
+                        if 'qua_tarde' in dias and 'qua_noite' in dias:
+                            quarta = '((diaSemana=\'Quarta-Feira\') AND (periodo=\'Tarde\') OR (periodo=\'Noite\'))'
+                else:
+                    if 'qua_manha' in dias:
+                        quarta = '((diaSemana=\'Quarta-Feira\') AND (periodo=\'Manhã\'))'
+                    if 'qua_tarde' in dias:
+                        quarta = '((diaSemana=\'Quarta-Feira\') AND (periodo=\'Tarde\'))'
+                    if 'qua_noite' in dias:
+                        quarta = '((diaSemana=\'Quarta-Feira\') AND (periodo=\'Noite\'))'
             else:
-                periodo_manha = Q()
-            if 'qua_tarde' in dias:
-                periodo_tarde = Q(periodo__contains='Tarde')
-            else:
-                periodo_tarde = Q()
-            if 'qua_noite' in dias:
-                periodo_noite = Q(periodo__contains='Noite')
-            else:
-                periodo_noite = Q()
-            quarta = Q(diaSemana__contains='Quarta-Feira') & (periodo_manha | periodo_tarde | periodo_noite)
+                quarta = ''
         else:
-            quarta = Q()
+            quarta = ''
         # Verifica se algum check de quinta vou setado por periodo
         if 'qui_manha' in dias or 'qui_tarde' in dias or 'qui_noite' in dias:
-            if 'qui_manha' in dias:
-                periodo_manha = Q(periodo__contains='Manhã')
+            qtd_periodo = 0
+            if 'qui_manha' in dias: qtd_periodo = qtd_periodo + 1
+            if 'qui_tarde' in dias: qtd_periodo = qtd_periodo + 1
+            if 'qui_noite' in dias: qtd_periodo = qtd_periodo + 1
+            # Verifica aual periodo foi selecionado
+            if qtd_periodo > 0:
+                quinta = ''
+                if qtd_periodo > 1:
+                    if qtd_periodo > 2:
+                        quinta = '((diaSemana=\'Quinta-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Tarde\') OR (periodo=\'Noite\'))'
+                    else:
+                        if 'qui_manha' in dias and 'qui_tarde' in dias:
+                            quinta = '((diaSemana=\'Quinta-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Tarde\'))'
+                        if 'qui_manha' in dias and 'qui_noite' in dias:
+                            quinta = '((diaSemana=\'Quinta-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Noite\'))'
+                        if 'qui_tarde' in dias and 'qui_noite' in dias:
+                            quinta = '((diaSemana=\'Quinta-Feira\') AND (periodo=\'Tarde\') OR (periodo=\'Noite\'))'
+                else:
+                    if 'qui_manha' in dias:
+                        quinta = '((diaSemana=\'Quinta-Feira\') AND (periodo=\'Manhã\'))'
+                    if 'qui_tarde' in dias:
+                        quinta = '((diaSemana=\'Quinta-Feira\') AND (periodo=\'Tarde\'))'
+                    if 'qui_noite' in dias:
+                        quinta = '((diaSemana=\'Quinta-Feira\') AND (periodo=\'Noite\'))'
             else:
-                periodo_manha = Q()
-            if 'qui_tarde' in dias:
-                periodo_tarde = Q(periodo__contains='Tarde')
-            else:
-                periodo_tarde = Q()
-            if 'qui_noite' in dias:
-                periodo_noite = Q(periodo__contains='Noite')
-            else:
-                periodo_noite = Q()
-            quinta = Q(diaSemana__contains='Quinta-Feira') & (periodo_manha | periodo_tarde | periodo_noite)
+                quinta = ''
         else:
-            quinta = Q()
+            quinta = ''
         # Verifica se algum check de sexta vou setado por periodo
         if 'sex_manha' in dias or 'sex_tarde' in dias or 'sex_noite' in dias:
-            if 'sex_manha' in dias:
-                periodo_manha = Q(periodo__contains='Manhã')
+            qtd_periodo = 0
+            if 'sex_manha' in dias: qtd_periodo = qtd_periodo + 1
+            if 'sex_tarde' in dias: qtd_periodo = qtd_periodo + 1
+            if 'sex_noite' in dias: qtd_periodo = qtd_periodo + 1
+            # Verifica aual periodo foi selecionado
+            if qtd_periodo > 0:
+                sexta = ''
+                if qtd_periodo > 1:
+                    if qtd_periodo > 2:
+                        sexta = '((diaSemana=\'Sexta-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Tarde\') OR (periodo=\'Noite\'))'
+                    else:
+                        if 'sex_manha' in dias and 'sex_tarde' in dias:
+                            sexta = '((diaSemana=\'Sexta-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Tarde\'))'
+                        if 'sex_manha' in dias and 'sex_noite' in dias:
+                            sexta = '((diaSemana=\'Sexta-Feira\') AND (periodo=\'Manhã\') OR (periodo=\'Noite\'))'
+                        if 'sex_tarde' in dias and 'sex_noite' in dias:
+                            sexta = '((diaSemana=\'Sexta-Feira\') AND (periodo=\'Tarde\') OR (periodo=\'Noite\'))'
+                else:
+                    if 'sex_manha' in dias:
+                        sexta = '((diaSemana=\'Sexta-Feira\') AND (periodo=\'Manhã\'))'
+                    if 'sex_tarde' in dias:
+                        sexta = '((diaSemana=\'Sexta-Feira\') AND (periodo=\'Tarde\'))'
+                    if 'sex_noite' in dias:
+                        sexta = '((diaSemana=\'Sexta-Feira\') AND (periodo=\'Noite\'))'
             else:
-                periodo_manha = Q()
-            if 'sex_tarde' in dias:
-                periodo_tarde = Q(periodo__contains='Tarde')
-            else:
-                periodo_tarde = Q()
-            if 'sex_noite' in dias:
-                periodo_noite = Q(periodo__contains='Noite')
-            else:
-                periodo_noite = Q()
-            sexta = Q(diaSemana__contains='Sexta-Feira') & (periodo_manha | periodo_tarde | periodo_noite)
+                sexta = ''
         else:
-            sexta = Q()
+            sexta = ''
         # Consulta status validacao docente
-        data['cons_validacao'] = request.POST['cons_validacao']
-        cons_validacao = Q(docente__status=request.POST['cons_validacao'])
+        cons_validacao = request.POST['cons_validacao']
         # Consulta Docente por bairro
         id_bairro_consulta = request.POST['cons_bairro_regiao']
         data['cons_bairro_regiao'] = id_bairro_consulta
-        # Busca no banco de acordo com os dados selecionados
-        filtro = DisponibilidadeDocente.objects.filter(
-            (segunda | terca | quarta | quinta | sexta) & cons_validacao
-        ).values('docente__id', 'docente__nome').annotate(Count('docente_id'))
+        # Montando SQL dos dias da semana
+        semana = ''
+        if segunda:
+            semana = segunda
+        if terca:
+            if semana:
+                semana = semana + ' OR ' + terca
+            else:
+                semana = terca
+        if quarta:
+            if semana:
+                semana = semana + ' OR ' + quarta
+            else:
+                semana = quarta
+        if quinta:
+            if semana:
+                semana = semana + ' OR ' + quinta
+            else:
+                semana = quinta
+        if sexta:
+            if semana:
+                semana = semana + ' OR ' + sexta
+            else:
+                semana = sexta
         # Filtrar por Bairro caso tenha selecionado algum
         if id_bairro_consulta != '0':
-            for doc in filtro:
-                result_dados = DisponibilidadeBairro.objects.filter(bairro_id=id_bairro_consulta, docente_id=doc['docente__id']).values('docente__nome')
-                data['dados'] = result_dados
+            sel_bairro = ' AND C.bairro_id = ' + id_bairro_consulta + ' '
+            inner_bairro = ' INNER JOIN geps_disponibilidadebairro C ON B.id=C.docente_id '
             # Retorna o nome do bairro selecionado
             cons_bairro_docente = Bairro.objects.only('nome').get(id=id_bairro_consulta).nome
             data['retorno_bairro_nome'] = cons_bairro_docente
         else:
-            data['dados'] = filtro
+            sel_bairro = ''
+            inner_bairro = ''
             data['retorno_bairro_nome'] = 'Todos'
-        # Retornando nome da Instituicao
-        data['nome_instituicao'] = request.POST['nome_instituicao']
+        # Montando Select para consulta
+        sqlDocente = "SELECT B.nome AS docente_nome \
+                            FROM geps_disponibilidadedocente A \
+                            INNER JOIN geps_docente B \
+                            ON A.docente_id=B.id " + inner_bairro + "\
+                            WHERE B.status = " + cons_validacao + " \
+                            AND (" + semana + ")" + sel_bairro + " \
+                            GROUP BY B.id \
+                            ORDER BY B.nome"
+        cursor = connection.cursor()
+        cursor.execute(sqlDocente)
+        resultado = cursor.fetchall()
+        data['dados'] = resultado
+        data['dado'] = sqlDocente
+    # Retornando a validacao
+    data['cons_validacao'] = request.POST['cons_validacao']
+    # Retornando nome da Instituicao
+    data['nome_instituicao'] = request.POST['nome_instituicao']
     # Retornando todos os bairros
     bairros = Bairro.objects.all
     data['all_bairros'] = bairros
