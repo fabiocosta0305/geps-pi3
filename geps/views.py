@@ -312,6 +312,7 @@ def formPesquisaDocente(request):
 # Busca dados no banco Docente
 def pesquisaDocente(request):
     data = {}
+    semana = ''
     data['instituicao'] = True  # Envia parametro de grupo
     if 'diaSemana' in request.POST:  # Verifica se algum check ou setado
         dias = request.POST.getlist('diaSemana')  # Pega a lista com todos os checks
@@ -466,13 +467,7 @@ def pesquisaDocente(request):
                 sexta = ''
         else:
             sexta = ''
-        # Consulta status validacao docente
-        cons_validacao = request.POST['cons_validacao']
-        # Consulta Docente por bairro
-        id_bairro_consulta = request.POST['cons_bairro_regiao']
-        data['cons_bairro_regiao'] = id_bairro_consulta
         # Montando SQL dos dias da semana
-        semana = ''
         if segunda:
             semana = segunda
         if terca:
@@ -495,31 +490,36 @@ def pesquisaDocente(request):
                 semana = semana + ' OR ' + sexta
             else:
                 semana = sexta
-        # Filtrar por Bairro caso tenha selecionado algum
-        if id_bairro_consulta != '0':
-            sel_bairro = ' AND C.bairro_id = ' + id_bairro_consulta + ' '
-            inner_bairro = ' INNER JOIN geps_disponibilidadebairro C ON B.id=C.docente_id '
-            # Retorna o nome do bairro selecionado
-            cons_bairro_docente = Bairro.objects.only('nome').get(id=id_bairro_consulta).nome
-            data['retorno_bairro_nome'] = cons_bairro_docente
-        else:
-            sel_bairro = ''
-            inner_bairro = ''
-            data['retorno_bairro_nome'] = 'Todos'
-        # Montando Select para consulta
-        sqlDocente = "SELECT B.nome AS docente_nome \
-                            FROM geps_disponibilidadedocente A \
-                            INNER JOIN geps_docente B \
-                            ON A.docente_id=B.id " + inner_bairro + "\
-                            WHERE B.status = " + cons_validacao + " \
-                            AND (" + semana + ")" + sel_bairro + " \
-                            GROUP BY B.id \
-                            ORDER BY B.nome"
-        cursor = connection.cursor()
-        cursor.execute(sqlDocente)
-        resultado = cursor.fetchall()
-        data['dados'] = resultado
-        data['dado'] = sqlDocente
+    # Consulta status validacao docente
+    cons_validacao = request.POST['cons_validacao']
+    # Filtrar por Bairro caso tenha selecionado algum
+    id_bairro_consulta = request.POST['cons_bairro_regiao']
+    data['cons_bairro_regiao'] = id_bairro_consulta
+    if id_bairro_consulta != '0':
+        sel_bairro = ' AND C.bairro_id = ' + id_bairro_consulta + ' '
+        inner_bairro = ' INNER JOIN geps_disponibilidadebairro C ON B.id=C.docente_id '
+        # Retorna o nome do bairro selecionado
+        cons_bairro_docente = Bairro.objects.only('nome').get(id=id_bairro_consulta).nome
+        data['retorno_bairro_nome'] = cons_bairro_docente
+    else:
+        sel_bairro = ''
+        inner_bairro = ''
+        data['retorno_bairro_nome'] = 'Todos'
+
+    # SQL Semana
+    if semana: 'AND (' + semana + ')'
+    # Montando Select para consulta
+    sqlDocente = "SELECT B.nome AS docente_nome \
+                        FROM geps_disponibilidadedocente A \
+                        INNER JOIN geps_docente B \
+                        ON A.docente_id=B.id " + inner_bairro + "\
+                        WHERE B.status = " + cons_validacao + semana + sel_bairro + " \
+                        GROUP BY B.id \
+                        ORDER BY B.nome"
+    cursor = connection.cursor()
+    cursor.execute(sqlDocente)
+    resultado = cursor.fetchall()
+    data['dados'] = resultado
     # Retornando a validacao
     data['cons_validacao'] = request.POST['cons_validacao']
     # Retornando nome da Instituicao
