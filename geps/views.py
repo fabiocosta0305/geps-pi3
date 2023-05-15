@@ -507,7 +507,8 @@ def pesquisaDocente(request):
         data['retorno_bairro_nome'] = 'Todos'
 
     # SQL Semana
-    if semana: 'AND (' + semana + ')'
+    if semana:
+        semana = ' AND (' + semana + ')'
     # Montando Select para consulta
     sqlDocente = "SELECT B.nome AS docente_nome \
                         FROM geps_disponibilidadedocente A \
