@@ -264,6 +264,9 @@ def logouts(request):
 
 # Formulário de troca de senha
 def changePassword(request):
+    # Checando uma tentativa de acesso direto
+    if not hasattr(request.user, 'first_name'):
+        return redirect('/')
     return render(request, 'changePassword.html')
 
 
@@ -300,6 +303,9 @@ def policy(request):
 
 # Pagina de Pesquisa de Docentes
 def formPesquisaDocente(request):
+    # Checando uma tentativa de acesso direto
+    if not hasattr(request.user, 'first_name'):
+        return redirect('/')
     nome_instituicao = Instituicao.objects.only('nome').get(email_responsavel=request.user.email).nome
     data = {}
     data['instituicao'] = True
@@ -571,6 +577,10 @@ def formDispDocente(request):
     bairros = Bairro.objects.all
     # Obtem o docente e as disponibilidades necessarias
     # logger = logger.warning(bairros)
+    
+    # Checando uma tentativa de acesso direto
+    if not hasattr(request.user, 'first_name'):
+        return redirect('/')
     context = {'all_bairros': bairros, 
                'checks': obtemDisponibilidades(request), 
                'all_bairros_selecionados': obtemBairros(request)}
@@ -614,6 +624,9 @@ def gravaBairrosDocente(request):
 
 # Formulário de Edição da Conta do Usuário
 def formEditUser(request):
+    # Checando uma tentativa de acesso direto
+    if not hasattr(request.user, 'first_name'):
+        return redirect('/')    
     data = {}
     data['nome'] = request.user.first_name
     data['name'] = request.user.username
@@ -675,6 +688,9 @@ def updateUser(request):
 
 # Formulário de Exclusão da Conta de Usuário
 def formDeleteUser(request):
+    # Checando uma tentativa de acesso direto
+    if not hasattr(request.user, 'first_name'):
+        return redirect('/')
     data = {}
     data['instituicao'] = False
     return render(request, 'deleteUser.html', data)
@@ -692,6 +708,9 @@ def deleteUser(request):
 
 # Formulário de Edição da Instituição
 def formEditInst(request):
+    # Checando uma tentativa de acesso direto
+    if not hasattr(request.user, 'first_name'):
+        return redirect('/')
     data = {}
     data['instituicao'] = True
     dadosInst = Instituicao.objects.get(email_responsavel=request.user.email)
@@ -771,6 +790,9 @@ def updateInst(request):
 
 # Formulário de Exclusão da Conta de Usuário
 def formDeleteInst(request):
+    # Checando uma tentativa de acesso direto
+    if not hasattr(request.user, 'first_name'):
+        return redirect('/')
     data = {}
     data['instituicao'] = True
     dadosInst = Instituicao.objects.get(email_responsavel=request.user.email)
