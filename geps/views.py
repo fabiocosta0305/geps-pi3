@@ -265,7 +265,7 @@ def logouts(request):
 # Formulário de troca de senha
 def changePassword(request):
     # Checando uma tentativa de acesso direto
-    if not hasattr(request.user, 'first_name'):
+    if not request.user.is_authenticated:
         return redirect('/')
     return render(request, 'changePassword.html')
 
@@ -304,7 +304,7 @@ def policy(request):
 # Pagina de Pesquisa de Docentes
 def formPesquisaDocente(request):
     # Checando uma tentativa de acesso direto
-    if not hasattr(request.user, 'first_name'):
+    if not request.user.is_authenticated:
         return redirect('/')
     nome_instituicao = Instituicao.objects.only('nome').get(email_responsavel=request.user.email).nome
     data = {}
@@ -579,7 +579,7 @@ def formDispDocente(request):
     # logger = logger.warning(bairros)
     
     # Checando uma tentativa de acesso direto
-    if not hasattr(request.user, 'first_name'):
+    if not request.user.is_authenticated:
         return redirect('/')
     context = {'all_bairros': bairros, 
                'checks': obtemDisponibilidades(request), 
@@ -625,8 +625,8 @@ def gravaBairrosDocente(request):
 # Formulário de Edição da Conta do Usuário
 def formEditUser(request):
     # Checando uma tentativa de acesso direto
-    if not hasattr(request.user, 'first_name'):
-        return redirect('/')    
+    if not request.user.is_authenticated:
+        return redirect('/')
     data = {}
     data['nome'] = request.user.first_name
     data['name'] = request.user.username
@@ -689,7 +689,7 @@ def updateUser(request):
 # Formulário de Exclusão da Conta de Usuário
 def formDeleteUser(request):
     # Checando uma tentativa de acesso direto
-    if not hasattr(request.user, 'first_name'):
+    if not request.user.is_authenticated:
         return redirect('/')
     data = {}
     data['instituicao'] = False
@@ -709,7 +709,7 @@ def deleteUser(request):
 # Formulário de Edição da Instituição
 def formEditInst(request):
     # Checando uma tentativa de acesso direto
-    if not hasattr(request.user, 'first_name'):
+    if not request.user.is_authenticated:
         return redirect('/')
     data = {}
     data['instituicao'] = True
@@ -791,7 +791,7 @@ def updateInst(request):
 # Formulário de Exclusão da Conta de Usuário
 def formDeleteInst(request):
     # Checando uma tentativa de acesso direto
-    if not hasattr(request.user, 'first_name'):
+    if not request.user.is_authenticated:
         return redirect('/')
     data = {}
     data['instituicao'] = True
@@ -818,7 +818,7 @@ def deleteInst(request):
 def obtemDisponibilidades(request):
     docente = Docente.objects.filter(nome=request.user.first_name)
     checks=[]
-    if not hasattr(request.user, 'first_name'):
+    if not request.user.is_authenticated:
         return redirect('/')
     for disp in DisponibilidadeDocente.objects.filter(docente_id=docente.values()[0]['id']):
         # logger.warning(dir(disp))
@@ -828,7 +828,7 @@ def obtemDisponibilidades(request):
 def obtemBairros(request):
     docente = Docente.objects.filter(nome=request.user.first_name)
     checks=[]
-    if not hasattr(request.user, 'first_name'):
+    if not request.user.is_authenticated:
         return redirect('/')
     for disp in DisponibilidadeBairro.objects.filter(docente_id=docente.values()[0]['id']).order_by('bairro_id'):
         meuBairro=[]
