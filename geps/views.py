@@ -818,6 +818,8 @@ def deleteInst(request):
 def obtemDisponibilidades(request):
     docente = Docente.objects.filter(nome=request.user.first_name)
     checks=[]
+    if not hasattr(request.user, 'first_name'):
+        return redirect('/')
     for disp in DisponibilidadeDocente.objects.filter(docente_id=docente.values()[0]['id']):
         # logger.warning(dir(disp))
         checks.append(disp.checkbox())
