@@ -826,6 +826,8 @@ def obtemDisponibilidades(request):
 def obtemBairros(request):
     docente = Docente.objects.filter(nome=request.user.first_name)
     checks=[]
+    if not hasattr(request.user, 'first_name'):
+        return redirect('/')
     for disp in DisponibilidadeBairro.objects.filter(docente_id=docente.values()[0]['id']).order_by('bairro_id'):
         meuBairro=[]
         # logger = logging.getLogger(__name__)
