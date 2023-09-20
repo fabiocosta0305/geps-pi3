@@ -10,7 +10,7 @@
                 <a href="/home/" class="btn btn-primary">Home</a>&nbsp;
             </div>
         </div>
-        <form action="/insertInst/" name="form-inst" id="formInst" method="post">
+        <form action="/buscaCEP/" name="form-buscacep" id="formBuscaCEP" method="post">
             <div>
                 {% if msg %}
                     <div class="alert {{class}} mensagem mx-auto" id="msg">
@@ -19,8 +19,13 @@
                 {% endif %}
                 {% csrf_token %}
                 <div class="form-icon">
-                    <span><i class="icon icon-user"></i></span>
+                    <span><i class="icon icon-user" ></i></span>
                 </div>
+                <div class="autocomplete" style="width:300px;margin: auto;">
+                    <input class="autocomplete-input" id="buscacep" name="buscacep" placeholder="Digite o CEP" style="height: 40px;"/>
+                </div>
+        </form>
+        <form action="/insertInst/" name="form-inst" id="formInst" method="post">
                 <div class="form-inline">
                     <input type="text" class="form-control item" name="name" id="name" placeholder="Nome da Instituição:" value="{{ name }}" style="width:100%">
                 </div>

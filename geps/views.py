@@ -3,7 +3,7 @@ import hashlib
 import operator
 import logging
 import json
-
+import requests
 from django import http
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
@@ -864,3 +864,25 @@ def configuraBairros(request,bairros,docente):
         disps.delete()
     for meuBairro in bairros:
         DisponibilidadeBairro.objects.update_or_create(bairro_id=meuBairro, docente_id=docente)
+
+
+def buscaInstituicaoAPI(request):
+    data = {}
+    nomeInstituicao = request.POST['buscaNomeInst']
+    envio = requests.get('http://educacao.dadosabertosbr.org/api/escolas?nome=' + nomeInstituicao)
+    data['retorno'] = envio.json()
+    data['teste'] = '123'
+    return render(request, 'cadInstituicao.html', data)
+
+
+def buscaCEP(request):
+    data = {}
+    cep = request.POST['buscacep']
+    envio = requests.get('https://viacep.com.br/ws/' + cep + '/json/')
+    retorno = envio.json()
+    data['cep'] = retorno['cep']
+    data['endereco'] = retorno['logradouro']
+    data['bairro'] = retorno['bairro']
+    data['municipio'] = retorno['localidade']
+    data['uf'] = retorno['uf']
+    return render(request, 'cadInstituicao.html', data)
