@@ -310,7 +310,17 @@ def formPesquisaDocente(request):
     data = {}
     data['instituicao'] = True
     data['nome_instituicao'] = nome_instituicao
-    bairros = Bairro.objects.all
+    #bairros = Bairro.objects.all
+    sqlBairrosInst = "SELECT A.id AS id, A.nome AS nome \
+                        FROM geps_bairro A ,geps_cidade B,geps_instituicao C ,auth_user D \
+                        WHERE A.cidade_id=B.id  \
+                        AND C.municipio=B.nome \
+                        AND C.email_responsavel=D.email \
+                        AND D.email='" + request.user.email + "'"
+    cursor = connection.cursor()
+    cursor.execute(sqlBairrosInst)
+    colunas = [coluna[0] for coluna in cursor.description]
+    bairros = [dict(zip(colunas, row)) for row in cursor.fetchall()]
     data['all_bairros'] = bairros
     return render(request, 'dashboard/pesquisaDocente.html', data)
 
@@ -532,7 +542,18 @@ def pesquisaDocente(request):
     # Retornando nome da Instituicao
     data['nome_instituicao'] = request.POST['nome_instituicao']
     # Retornando todos os bairros
-    bairros = Bairro.objects.all
+    #bairros = Bairro.objects.all
+    # Retornando todos os bairros de acordo com a cidade de cadastro da instituicão
+    sqlBairrosInst = "SELECT A.id AS id, A.nome AS nome \
+                        FROM geps_bairro A ,geps_cidade B,geps_instituicao C ,auth_user D \
+                        WHERE A.cidade_id=B.id  \
+                        AND C.municipio=B.nome \
+                        AND C.email_responsavel=D.email \
+                        AND D.email='" + request.user.email + "'"
+    cursor = connection.cursor()
+    cursor.execute(sqlBairrosInst)
+    colunas = [coluna[0] for coluna in cursor.description]
+    bairros = [dict(zip(colunas, row)) for row in cursor.fetchall()]
     data['all_bairros'] = bairros
     # Retorna identificação de acionamento do botão pesquisar
     data['pesquisar'] = '1'
@@ -571,10 +592,10 @@ def gravaStatusDocente(request):
         return render(request, 'dashboard/pesquisaDocente.html', data)
 
 
-
 def formDispDocente(request):
     # logger = logging.getLogger(__name__)
     bairros = Bairro.objects.all
+
     # Obtem o docente e as disponibilidades necessarias
     # logger = logger.warning(bairros)
     
@@ -825,6 +846,7 @@ def obtemDisponibilidades(request):
         checks.append(disp.checkbox())
     return checks
 
+
 def obtemBairros(request):
     docente = Docente.objects.filter(nome=request.user.first_name)
     checks=[]
@@ -843,6 +865,7 @@ def obtemBairros(request):
     checks.sort(key=operator.itemgetter('nome'))
     return checks
 
+
 # Configura a Lista da Disponibilidade de um Professor
 def configuraDisponbilidade(request, dias, docente):
     diasSemana={'seg': 'Segunda-Feira',
@@ -859,20 +882,12 @@ def configuraDisponbilidade(request, dias, docente):
         dia, periodo = meuDia.split("_")
         DisponibilidadeDocente.objects.update_or_create(diaSemana=diasSemana[dia], periodo=periodosDia[periodo],docente_id=docente)
 
+
 def configuraBairros(request,bairros,docente):
     for disps in DisponibilidadeBairro.objects.filter(docente_id=docente):
         disps.delete()
     for meuBairro in bairros:
         DisponibilidadeBairro.objects.update_or_create(bairro_id=meuBairro, docente_id=docente)
-
-
-def buscaInstituicaoAPI(request):
-    data = {}
-    nomeInstituicao = request.POST['buscaNomeInst']
-    envio = requests.get('http://educacao.dadosabertosbr.org/api/escolas?nome=' + nomeInstituicao)
-    data['retorno'] = envio.json()
-    data['teste'] = '123'
-    return render(request, 'cadInstituicao.html', data)
 
 
 def buscaCEP(request):
