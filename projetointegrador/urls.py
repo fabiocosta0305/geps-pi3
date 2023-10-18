@@ -60,4 +60,5 @@ urlpatterns = [
     path('formDeleteInst/', formDeleteInst, name="formDeleteInst"),
     path('deleteInst/', deleteInst, name="deleteInst"),
     path('buscaCEP/', buscaCEP, name="buscaCEP"),
+    path('oauth/', include('social_django.urls', namespace="social")),
 ]
