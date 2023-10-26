@@ -1,0 +1,28 @@
+name: Geps-tests 
+  
+on: [push]  
+  
+jobs:  
+  build:  
+    runs-on: ubuntu-latest  
+
+    strategy:  
+      matrix:  
+        python-version: '3.x'
+    steps:
+        # Verifica ultimo commit
+      - name: Check Commit
+        uses: actions/checkout@v1
+        # Setar versão do Python
+      - name: Set Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+        # Instalando dependencias
+      - name: Install dependencies
+        run: |  
+          python -m pip install --upgrade pip  
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        # Rodando o teste
+      - name: Run test
+        run: python manage.py test
