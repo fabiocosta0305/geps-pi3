@@ -229,7 +229,6 @@ def insertInst(request):
 def loginUser(request):
     return render(request, 'loginUser.html')
 
-
 # Validacao e acesso do login
 def validLoginUser(request):
     data = {}
@@ -245,7 +244,6 @@ def validLoginUser(request):
         data['class'] = 'alert-danger'
         return render(request, 'loginUser.html', data)
 
-
 # Página inicial do dashboard
 def dashboard(request):
     data = {}
@@ -254,7 +252,6 @@ def dashboard(request):
     else:
         data['instituicao'] = False
     return render(request, 'dashboard/home.html', data)
-
 
 # Logout do sistema
 def logouts(request):
@@ -268,7 +265,6 @@ def changePassword(request):
     if not request.user.is_authenticated:
         return redirect('/')
     return render(request, 'changePassword.html')
-
 
 # Alterar a senha do Usuario
 def validChangePassword(request):
@@ -295,11 +291,9 @@ def validChangePassword(request):
         data['class'] = 'alert-success'
         return render(request, 'loginUser.html', data)
 
-
 # Página de politica de privacidade
 def policy(request):
     return render(request, 'policy.html')
-
 
 # Pagina de Pesquisa de Docentes
 def formPesquisaDocente(request):
@@ -323,7 +317,6 @@ def formPesquisaDocente(request):
     bairros = [dict(zip(colunas, row)) for row in cursor.fetchall()]
     data['all_bairros'] = bairros
     return render(request, 'dashboard/pesquisaDocente.html', data)
-
 
 # Busca dados no banco Docente
 def pesquisaDocente(request):
@@ -559,7 +552,6 @@ def pesquisaDocente(request):
     data['pesquisar'] = '1'
     return render(request, 'dashboard/pesquisaDocente.html', data)
 
-
 # Busca cadastro Docente
 def buscaDocente(request):
     if request.POST.get('nome_docente', False):
@@ -567,7 +559,6 @@ def buscaDocente(request):
         filtro = Docente.objects.filter(nome=request.POST['nome_docente'])
         data = serialize("json", filtro)
         return JsonResponse(data, safe=False)
-
 
 # Atualiza status Docente
 def gravaStatusDocente(request):
@@ -591,7 +582,6 @@ def gravaStatusDocente(request):
         data['class'] = 'alert-danger'
         return render(request, 'dashboard/pesquisaDocente.html', data)
 
-
 def formDispDocente(request):
     # logger = logging.getLogger(__name__)
     bairros = Bairro.objects.all
@@ -606,9 +596,7 @@ def formDispDocente(request):
                'checks': obtemDisponibilidades(request), 
                'all_bairros_selecionados': obtemBairros(request)}
     # logger.warn(context)
-
     return render(request, 'dashboard/disponibilidadeDocente.html', context)
-
 
 def gravaBairrosDocente(request):
     data = {}  # Cria objeto para retorno
@@ -640,8 +628,6 @@ def gravaBairrosDocente(request):
         data['checks'] = obtemDisponibilidades(request)
         data['all_bairros_selecionados']=obtemBairros(request)
         return render(request, 'dashboard/disponibilidadeDocente.html', data)
-        
-
 
 # Formulário de Edição da Conta do Usuário
 def formEditUser(request):
@@ -657,7 +643,6 @@ def formEditUser(request):
     data['reg_funcional'] = docente.reg_funcional
     data['instituicao'] = False
     return render(request, 'editUser.html', data)
-
 
 # Validações e update do usuario
 def updateUser(request):
@@ -701,11 +686,9 @@ def updateUser(request):
                                                                 email=request.POST['email'])
         User.objects.filter(username=request.user.username).update(email=request.POST['email'],
                                                                    first_name=request.POST['nome'])
-
         data['msg'] = 'Dados Alterados com sucesso!'
         data['class'] = 'alert-success'
         return render(request, 'editUser.html', data)
-
 
 # Formulário de Exclusão da Conta de Usuário
 def formDeleteUser(request):
@@ -716,7 +699,6 @@ def formDeleteUser(request):
     data['instituicao'] = False
     return render(request, 'deleteUser.html', data)
 
-
 # Exclusão da Conta de Usuário
 def deleteUser(request):
     userDocente = Docente.objects.get(email=request.user.email)
@@ -725,7 +707,6 @@ def deleteUser(request):
     user.delete()
     data = {'msg': 'Usuário Excluído com Sucesso!', 'class': 'alert-success', 'exclusao': '1'}
     return render(request, 'deleteUser.html', data)
-
 
 # Formulário de Edição da Instituição
 def formEditInst(request):
@@ -749,7 +730,6 @@ def formEditInst(request):
     data['email_resp'] = dadosInst.email_responsavel
     data['telefone_resp'] = dadosInst.telefone_responsavel
     return render(request, 'editInstituicao.html', data)
-
 
 # Validações e update Instituicao
 def updateInst(request):
@@ -808,7 +788,6 @@ def updateInst(request):
         data['class'] = 'alert-success'
         return render(request, 'editInstituicao.html', data)
 
-
 # Formulário de Exclusão da Conta de Usuário
 def formDeleteInst(request):
     # Checando uma tentativa de acesso direto
@@ -824,7 +803,6 @@ def formDeleteInst(request):
     data['telefone_resp'] = dadosInst.telefone_responsavel
     return render(request, 'deleteInst.html', data)
 
-
 # Exclusão da Conta de Usuário
 def deleteInst(request):
     userInst = Instituicao.objects.get(email_responsavel=request.user.email)
@@ -833,7 +811,6 @@ def deleteInst(request):
     user.delete()
     data = {'msg': 'Instituição Excluída com Sucesso!', 'class': 'alert-success', 'exclusao': '1'}
     return render(request, 'deleteInst.html', data)
-
 
 # Obtem a Lista da Disponibilidade de um Professor
 def obtemDisponibilidades(request):
@@ -845,7 +822,6 @@ def obtemDisponibilidades(request):
         # logger.warning(dir(disp))
         checks.append(disp.checkbox())
     return checks
-
 
 def obtemBairros(request):
     docente = Docente.objects.filter(nome=request.user.first_name)
@@ -865,7 +841,6 @@ def obtemBairros(request):
     checks.sort(key=operator.itemgetter('nome'))
     return checks
 
-
 # Configura a Lista da Disponibilidade de um Professor
 def configuraDisponbilidade(request, dias, docente):
     diasSemana={'seg': 'Segunda-Feira',
@@ -882,13 +857,11 @@ def configuraDisponbilidade(request, dias, docente):
         dia, periodo = meuDia.split("_")
         DisponibilidadeDocente.objects.update_or_create(diaSemana=diasSemana[dia], periodo=periodosDia[periodo],docente_id=docente)
 
-
 def configuraBairros(request,bairros,docente):
     for disps in DisponibilidadeBairro.objects.filter(docente_id=docente):
         disps.delete()
     for meuBairro in bairros:
         DisponibilidadeBairro.objects.update_or_create(bairro_id=meuBairro, docente_id=docente)
-
 
 def buscaCEP(request):
     data = {}
