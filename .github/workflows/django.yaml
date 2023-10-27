@@ -35,6 +35,5 @@ jobs:
         DJANGO_ALLOWED_HOSTS: localhost 127.0.0.1 [::1]
         DEBUG_MODE: False
         TIME_ZONE: 'America/Sao_Paulo'
-        CACHE_KEY_PREFIX: Halo
       run: |
         python manage.py test
