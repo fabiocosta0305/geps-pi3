@@ -2,9 +2,9 @@ name: Django CI
 run-name: ${{ github.workflow }} ${{ github.run_number }}
 on:
   push:
-    branches: [ $default-branch ]
+    branches: [ master ]
   pull_request:
-    branches: [ $default-branch ]
+    branches: [ master ]
 jobs:
   build:
 
