@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import django_on_heroku
-import os
+import os, sys
 from .email_info import *
 from dotenv import load_dotenv
 load_dotenv()
@@ -100,7 +100,16 @@ WSGI_APPLICATION = 'projetointegrador.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
+# Configurations for Tests
+if sys.argv[1] == 'test':
+  DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
+    }
+  }
+else:
+  DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ.get('DATABASE_NAME'),
@@ -112,7 +121,7 @@ DATABASES = {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         }
     }
-}
+  }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -168,10 +177,11 @@ django_on_heroku.settings(locals(), databases=False)
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
-    'social_core.backends.twitter.TwitterOAuth'
+    'social_core.backends.twitter.TwitterOAuth',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
 LOGIN_URL = 'loginUser'
 LOGOUT_URL = 'logouts'
 LOGIN_REDIRECT_URL = 'home'
+
