@@ -1,12 +1,13 @@
-# Projeto Integrador UniVESP 1º Semestre 2023
+# Projeto Integrador II UNIVESP - 2º Semestre 2023
 
-## GEPS
+## GEPS - Gerenciador Eletrônico de Professores Substitutos
 
-Essas instruções servem normalmente para serem usados com banco de dados MySQL e PostgreSQL. Outros bancos podem demandar outras instruções
+Essas instruções servem normalmente para serem usados com banco 
+de dados MySQL e PostgreSQL. Outros bancos podem demandar outras instruções.
 
 ### Instalação
 
-Baixar esse código e colocar ele em uma pasta visível pelo Apache 
+Baixar esse código e colocar ele em uma pasta visível pelo Apache.
 
 ### Instalação das bibliotecas necessárias
 
