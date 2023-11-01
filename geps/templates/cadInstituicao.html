@@ -26,6 +26,7 @@
                 </div>
         </form>
         <form action="/insertInst/" name="form-inst" id="formInst" method="post">
+                {% csrf_token %}
                 <div class="form-inline">
                     <input type="text" class="form-control item" name="name" id="name" placeholder="Nome da Instituição:" value="{{ name }}" style="width:100%">
                 </div>
@@ -85,5 +86,6 @@
     $('input[name="telefone_inst"]').mask('(00) 00000-0000');
     $('input[name="telefone_resp"]').mask('(00) 00000-0000');
     $('input[name="cep"]').mask('00000-000');
+    $('input[name="buscacep"]').mask('00000-000');
 </script>
 {% endblock %}
