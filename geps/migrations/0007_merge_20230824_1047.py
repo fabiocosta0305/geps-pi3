@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('geps', '0003_instituicao_alter_estado_sigla_demanda'),
+        ('geps', '0003_instituicao_alter_disponibilidadedocente_diasemana_and_more'),
         ('geps', '0006_disponibilidaderegiao_docente_regiao'),
     ]
 

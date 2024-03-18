@@ -96,20 +96,41 @@ WSGI_APPLICATION = 'projetointegrador.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.environ.get('DATABASE_NAME'),
+#         'HOST': os.environ.get('DATABASE_HOST'),
+#         'USER': os.environ.get('DATABASE_USER'),
+#         'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         }
+#     }
+# }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'geps',
+#         'HOST': '10.0.0.22',
+#         'USER': 'geps',
+#         'PASSWORD': 'geps',
+#         'PORT': '5432' # padrão 5432
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DATABASE_NAME'),
-        'HOST': os.environ.get('DATABASE_HOST'),
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        }
+        'NAME': 'geps',
+        'HOST': '10.0.0.22',
+        'USER': 'geps',
+        'PASSWORD': 'geps',
+        'PORT': '' # padrão 5432
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
