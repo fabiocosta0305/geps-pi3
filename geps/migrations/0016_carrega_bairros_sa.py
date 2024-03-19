@@ -38,7 +38,7 @@ def load_initial_data(apps, schema_editor):
     
     # Inclua na lista todos os bairros necessários
     for i in bairros:    
-        bairro_model.objects.create(nome = i, cidade_id = cidade_id.pk)
+        bairro_model.objects.get_or_create(nome = i, cidade_id = cidade_id.pk)
 
 def clean_reverse_data(apps, schema_editor):
     cidade_model = apps.get_model('geps', 'Cidade')

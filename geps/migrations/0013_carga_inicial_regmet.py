@@ -14,7 +14,7 @@ def load_data(apps,schema_editor):
     reg_mets=myduck.execute("select distinct RegiaoMetropolitana from cidades").fetchall()
     for reg_met in reg_mets:
         # print(reg_met[0])  # depuração de inserção
-        reg_met_model.objects.create(RegiaoMetropolitana = reg_met[0])
+        reg_met_model.objects.get_or_create(RegiaoMetropolitana = reg_met[0])
 
 # TODO
 def empty_data(apps,schema_editor):

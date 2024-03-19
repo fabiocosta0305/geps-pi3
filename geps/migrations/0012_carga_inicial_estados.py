@@ -14,7 +14,7 @@ def load_data(apps,schema_editor):
     estados=myduck.execute("select distinct Estado from cidades").fetchall()
     for estado in estados:
         # print(estado[0])  # depuração de inserção
-        estado_model.objects.create(sigla = estado[0])
+        estado_model.objects.get_or_reate(sigla = estado[0])
 
 # TODO
 def empty_data(apps,schema_editor):

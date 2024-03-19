@@ -19,12 +19,12 @@ def load_data(apps,schema_editor):
         estado_instancia = estado_model.objects.get(sigla = estado)
         regmet_instancia = regmet_model.objects.get(RegiaoMetropolitana = regmet)
         # print(cidade[0])  # depuração de inserção
-        cidade_model.objects.create(
-            nome=cidade,
-            regmet = regmet_instancia,
-            estado = estado_instancia,
-            lat = lat,
-            lng = lon
+        cidade_model.objects.get_or_create(
+                nome=cidade,
+                regmet = regmet_instancia,
+                estado = estado_instancia,
+                lat = lat,
+                lng = lon
             )
 
 # TODO
