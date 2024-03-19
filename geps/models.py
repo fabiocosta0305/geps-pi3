@@ -92,6 +92,18 @@ class Cidade(models.Model):
 
     def __str__(self):
         return self.nome + ' - ' + self.estado.sigla
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    'nome',
+                    'estado',
+                    'regmet'
+                ],
+                name='CidadeUnica'
+            )
+        ]
 
 
 class Regioes(models.Model):
