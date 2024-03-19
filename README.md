@@ -261,7 +261,7 @@ Substituir `0015_alter_regiaometropolitana_regiaometropolitana_and_more` para o 
 
 ### Criar a Estrutura de Base de dados
 
-Após todos os ajustes terem sido realizados em `projetointegrador/settings.py`, `migrations/0010_carrega_cidades.py` e `migrations/0011_carrega_bairros.py`, aplique as migrações para que a estrutura do banco seja criada e os dados iniciais carregados de maneira adequada
+Após todos os ajustes terem sido realizados em `projetointegrador/settings.py`, e a adição dos arquivos de migração para sua cidade, aplique as migrações para que a estrutura do banco seja criada e os dados iniciais carregados de maneira adequada
 
 + `python3 manage.py migrate`
 
