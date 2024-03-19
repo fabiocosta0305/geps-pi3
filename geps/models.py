@@ -96,7 +96,7 @@ class Cidade(models.Model):
 
 class Regioes(models.Model):
     regiao = models.CharField(max_length=50)
-    cidade = models.ForeignKey(Cidade, on_delete=models.CASCADE, related_name='regiao')
+    # cidade = models.ForeignKey(Cidade, on_delete=models.CASCADE, related_name='regiao')
 
     def _str_(self):
         return self.nome + ' - ' + self.cidade.nome
