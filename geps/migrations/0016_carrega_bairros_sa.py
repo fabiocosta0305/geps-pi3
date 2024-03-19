@@ -42,7 +42,9 @@ def load_initial_data(apps, schema_editor):
 
 def clean_reverse_data(apps, schema_editor):
     cidade_model = apps.get_model('geps', 'Cidade')
-    cidade_model.objects.all().delete()
+    bairro_model = apps.get_model('geps', 'Bairro')
+    cidade_id=cidade_model.objects.get(nome = "Santo André", estado__sigla='SP')
+    bairro_model.objects.all().filter(cidade_id=cidade_id.pk).delete()
 
 
 class Migration(migrations.Migration):
