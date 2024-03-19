@@ -12,15 +12,14 @@ Baixar esse código e colocar ele em uma pasta visível pelo Apache
 
 Use em linha de comando o utilitário `pip` para instalar os seguintes pacotes do Python
 
-+ `django_on_heroku`
-+ `dotenv`
-+ `django_model_utils`
-+ `django_simple_cookie_consent`
+> `python3 -m pip install -r requirements.txt`
 
-Além das bibliotecas para o banco de dados desejado:
+Além das bibliotecas para o banco de dados desejado (caso não esteja instalado):
 
 + MySQL/MariaDB: `pip3 install mysql python-mysql`
 + PostegreSQL: `pip3 install mysql pyscopg2`
+
+> ***ATENÇÃO:*** Como esse projeto é baseado no Framework Django, ele é compatível com qualquer banco de dados suportado pelo mesmo, e as funcionalidades não serão diferentes. ***Entretanto*** não será nossa responsabilidade a configuração do banco de dados para esses bancos. O projeto foi focado no uso de MySQL/MariaDB e PostgreSQL, e não foi pensado no uso com outros bancos de dados.
 
 ### Configuração do Banco de dados
 
