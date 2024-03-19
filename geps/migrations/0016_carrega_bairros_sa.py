@@ -10,6 +10,8 @@ def load_initial_data(apps, schema_editor):
 
     # Modifique a lista abaixo como necessário para sua localidade
      
+    cidade_id=cidade_model.objects.get(nome = "Santo André", estado__sigla='SP')
+    
     bairros = ['Acampamento Anchieta', 'Araçaúva', 'Bangu', 'Campestre', 'Campo Grande', 'Casa Branca',
                'Cata Preta', 'Centreville', 'Centro', 'Cidade São Jorge', 'Condomínio Maracanã',
                'Estância Rio Grande', 'Jardim', 'Jardim Alvorada', 'Jardim Alzira Franco',
@@ -34,8 +36,6 @@ def load_initial_data(apps, schema_editor):
                'Vila Príncipe de Gales', 'Vila Progresso', 'Vila Sacadura Cabral', 'Vila Scarpelli',
                'Vila Suíça', 'Vila Tibiriçá', 'Vila Valparaíso', 'Vila Vitória', 'Waisberg']
 
-    cidade_id=cidade_model.objects.get(nome = "Santo André", estado__sigla='SP')
-    
     # Inclua na lista todos os bairros necessários
     for i in bairros:    
         bairro_model.objects.get_or_create(nome = i, cidade_id = cidade_id.pk)
