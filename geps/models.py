@@ -66,13 +66,13 @@ class Demanda(models.Model):
 
 # Criando uma classe para os Estados
 class Estado(models.Model):
-    sigla = models.CharField(max_length=2, null=True)
+    sigla = models.CharField(max_length=2, null=True, unique=True)
 
     def __str__(self):
         return self.sigla
 
 class RegiaoMetropolitana(models.Model):
-    RegiaoMetropolitana = models.CharField(max_length=100,null=True)
+    RegiaoMetropolitana = models.CharField(max_length=100,null=True, unique=True)
 
     def __str__(self):
         return self.RegiaoMetropolitana
