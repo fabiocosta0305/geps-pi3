@@ -60,5 +60,5 @@ urlpatterns = [
     path('formDeleteInst/', formDeleteInst, name="formDeleteInst"),
     path('deleteInst/', deleteInst, name="deleteInst"),
     path('buscaCEP/', buscaCEP, name="buscaCEP"),
-    path('validLoginUserAPI', validLoginUserAPI, name="validLoginUserAPI"),
+    path('validLoginUserAPI/', validLoginUserAPI, name="validLoginUserAPI"),
 ]
