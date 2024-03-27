@@ -246,6 +246,23 @@ def validLoginUser(request):
         return render(request, 'loginUser.html', data)
 
 
+# Validacao e acesso do login Via API
+def validLoginUserAPI(request):
+    data = {"username": request.POST['name'], "password": request.POST['password']}
+    response = requests.post('https://geps-api-2183a6296352.herokuapp.com/login/', data=data)
+    if response.status_code == 202:
+        if response.json():
+            print('Instituicao')
+        else:
+            print('Docente')
+        return render(request, 'dashboard/home.html')
+    else:
+        data = {}
+        data['msg'] = "Erro na API: " + str(response.status_code)
+        data['class'] = 'alert-danger'
+        return render(request, 'loginUser.html', data)
+
+
 # Página inicial do dashboard
 def dashboard(request):
     data = {}
