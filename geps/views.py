@@ -252,10 +252,11 @@ def validLoginUserAPI(request):
     response = requests.post('https://geps-api-2183a6296352.herokuapp.com/login/', data=data)
     if response.status_code == 202:
         if response.json():
-            print('Instituicao')
+            data['instituicao'] = True
         else:
-            print('Docente')
-        return render(request, 'dashboard/home.html')
+            data['instituicao'] = False
+        user = authenticate(username=request.POST['name'], password=request.POST['password'])
+        return render(request, 'dashboard/home.html', data)
     else:
         data = {}
         data['msg'] = "Erro na API: " + str(response.status_code)
