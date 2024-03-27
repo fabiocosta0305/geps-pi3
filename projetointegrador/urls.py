@@ -23,7 +23,7 @@ from geps.views import home, cadUser, insertUser, loginUser, validLoginUser, \
     dashboard, logouts, changePassword, validChangePassword, policy, cadInstituicao, \
     insertInst, formPesquisaDocente, pesquisaDocente, buscaDocente, gravaStatusDocente, \
     formDispDocente, gravaBairrosDocente, formEditUser, updateUser, formDeleteUser, deleteUser, \
-    formEditInst, updateInst, deleteInst, formDeleteInst, buscaCEP
+    formEditInst, updateInst, deleteInst, formDeleteInst, buscaCEP, validLoginUserAPI
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -60,4 +60,5 @@ urlpatterns = [
     path('formDeleteInst/', formDeleteInst, name="formDeleteInst"),
     path('deleteInst/', deleteInst, name="deleteInst"),
     path('buscaCEP/', buscaCEP, name="buscaCEP"),
+    path('validLoginUserAPI', validLoginUserAPI, name="validLoginUserAPI"),
 ]
