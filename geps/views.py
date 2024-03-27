@@ -256,6 +256,7 @@ def validLoginUserAPI(request):
         else:
             data['instituicao'] = False
         user = authenticate(username=request.POST['name'], password=request.POST['password'])
+        login(request, user)
         return render(request, 'dashboard/home.html', data)
     else:
         data = {}
