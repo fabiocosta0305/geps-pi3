@@ -13,7 +13,8 @@ def load_data(apps,schema_editor):
     regmet_model=apps.get_model('geps', 'RegiaoMetropolitana')
     this_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'source_data'))
     myduck=duckdb.connect(this_dir + "/cidades_completo.duckdb")
-    cidades=myduck.execute("select Estado,RegiaoMetropolitana,Cidade,lat,lon from cidades").fetchall()
+    # cidades=myduck.execute("select Estado,RegiaoMetropolitana,Cidade,lat,lon from cidades").fetchall()
+    cidades=myduck.execute("select Estado,RegiaoMetropolitana,Cidade,lat,lon from cidades where Estado='SP'").fetchall()
     for cidade in cidades:
         estado,regmet,cidade,lat,lon=cidade
         estado_instancia = estado_model.objects.get(sigla = estado)
