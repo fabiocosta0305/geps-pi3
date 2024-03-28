@@ -66,19 +66,55 @@ class Demanda(models.Model):
 
 # Criando uma classe para os Estados
 class Estado(models.Model):
-    sigla = models.CharField(max_length=2, null=True)
+    sigla = models.CharField(max_length=2, null=True, unique=True)
 
     def __str__(self):
         return self.sigla
+
+class RegiaoMetropolitana(models.Model):
+    RegiaoMetropolitana = models.CharField(max_length=100,null=True, unique=True)
+
+    def __str__(self):
+        return self.RegiaoMetropolitana
+    
+    class Meta:
+        ordering = ['RegiaoMetropolitana']
 
 
 # Criando uma classe para as Cidades
 class Cidade(models.Model):
     nome = models.CharField(max_length=100)
     estado = models.ForeignKey(Estado, on_delete=models.CASCADE, related_name='cidades')
+    # regiao = models.ForeignKey(Regioes, on_delete=models.CASCADE, related_name="regiao",null=True)
+    regmet = models.ForeignKey(RegiaoMetropolitana, on_delete=models.CASCADE, related_name="regiao",null=True)
+    lat = models.FloatField(null=True)
+    lng = models.FloatField(null=True)
 
     def __str__(self):
         return self.nome + ' - ' + self.estado.sigla
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    'nome',
+                    'estado',
+                    'regmet'
+                ],
+                name='CidadeUnica'
+            )
+        ]
+
+
+class Regioes(models.Model):
+    regiao = models.CharField(max_length=50)
+    # cidade = models.ForeignKey(Cidade, on_delete=models.CASCADE, related_name='regiao')
+
+    def _str_(self):
+        return self.nome + ' - ' + self.cidade.nome
+
+    class Meta:
+        ordering = ['regiao']
 
 
 # Criando uma classe para os Bairros
@@ -92,17 +128,6 @@ class Bairro(models.Model):
 
     class Meta:
         ordering = ['nome']
-
-
-class Regioes(models.Model):
-    regiao = models.CharField(max_length=50)
-    cidade = models.ForeignKey(Cidade, on_delete=models.CASCADE, related_name='regiao')
-
-    def _str_(self):
-        return self.nome + ' - ' + self.cidade.nome
-
-    class Meta:
-        ordering = ['regiao']
 
 
 class DisponibilidadeRegiao(models.Model):
