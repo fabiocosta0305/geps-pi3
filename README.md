@@ -251,11 +251,11 @@ substitua `/bairros_cotia.txt` pelo nome do arquivo criado anteriormente
 
 Na linha 52 (`carrega_bairro_sa.py`) ou 33 (`carrega_bairro_cotia.py`):
 
-```
+~~~
     dependencies = [
         ('geps', '0015_alter_regiaometropolitana_regiaometropolitana_and_more'),
     ]
-```
+~~~
 
 Substituir `0015_alter_regiaometropolitana_regiaometropolitana_and_more` para o nome do último arquivo da pasta `migrations` antes do seu.
 
@@ -274,3 +274,86 @@ Nesse momento, você já terá a base do GEPS configurada e o sistema poderá se
 Esse último comando pode demandar permissão de administrador e a janela onde o mesmo for executado não pode ser fechada
 
 
+## FAQ
+
+### Erro `max_questions` do banco MySQL ao rodar as *migrations*, ***especialmente*** `0014_carga_inicial_cidade` e posterioras.
+
+Caso isso ocorra, deve-se a limites de consultas horárias em seu serviço de banco de dados de nuvem. Uma opção seria, nessa período do *deploy*, aumentar o plano. Caso contrário, será necessário alguns ajustes a serem feitos.
+
+#### Obtendo o cliente de banco de dados DuckDB
+
+O arquivo de carga de dados funciona no formato DuckDB. Essa opção foi feita para aumentar a performance e a confiabilidade dos dados.
+
+Para manipular esse arquivo, você precisará de um cliente do DuckDB atualizado (no momento da implementação, versão mínima 0.10.0). Será necessário manipular esse arquivo para obter a Região Metropolitana do Município da Escola onde o mesmo será implantado
+
+Para essa tarefa iremos utilizar o cliente de linha de comando do DuckDB que pode ser obtido [nesse link](https://duckdb.org/docs/installation/?version=stable&environment=cli&platform=linux&download_method=package_manager). Escolha a opção que mais se ajusta ao sistema operacional desejado.
+
+#### Acesso ao DuckDB e obtenção da Região metropolitana
+
+Após o download do DuckDB, abra um Terminal ou Prompt de Comandos conforme seu sistema operacional e navegue na pasta:
+
++ `<instalação do geps>/geps/migrations/source_data` 
+
+E utilize o comando:
+
++ `duckdb cidades_completo.duckdb`
+
+Para abrir o arquivo de carga das cidades.
+
+No prompt `D` que apareceu, emita o comando SQL abaixo:
+
++ `select Cidade,Estado,RegiaoMetropolitana from cidades where Cidade='<sua cidade>' and Estado ='<estado da sua cidade>';`
+
+Subtituindo `<sua cidade>` pela cidade da escola onde será implantado o GEPS e `<estado da sua cidade>` pelo o Estado da mesma.
+
+Por exemplo, paraa cidade de São Bernardo do Campo (SP), utilize:
+
++ `select Cidade,Estado,RegiaoMetropolitana from cidades where Cidade='São Bernardo do Campo' and Estado ='SP';`
+
+O DuckDB irá emitir um resultado similar ao abaixo:
+
+```
+┌───────────────────────┬─────────┬────────────────────────────┐
+│        Cidade         │ Estado  │    RegiaoMetropolitana     │
+│        varchar        │ varchar │          varchar           │
+├───────────────────────┼─────────┼────────────────────────────┤
+│ São Bernardo do Campo │ SP      │ Metropolitana de São Paulo │
+└───────────────────────┴─────────┴────────────────────────────┘
+```
+
+E para Borda da Mata (MG), o comando será:
+
++ `select Cidade,Estado,RegiaoMetropolitana from cidades where Cidade='Borda da Mata' and Estado = 'MG';`
+
+E o resultado será como abaixo:
+
+~~~
+┌───────────────┬─────────┬───────────────────────┐
+│    Cidade     │ Estado  │  RegiaoMetropolitana  │
+│    varchar    │ varchar │        varchar        │
+├───────────────┼─────────┼───────────────────────┤
+│ Borda da Mata │ MG      │ Sul/Sudoeste de Minas │
+└───────────────┴─────────┴───────────────────────┘
+~~~
+
+Copie essa informação do campo `RegiaoMetropolitana`. Você precisará dela para ajustar a `migration` `0014_carga_inicial_cidade.py`
+
+#### Ajustando a `migration` `0014_carga_inicial_cidade.py`
+
+Em um editor de texto (como o Bloco de ota) simples ou IDE de programação (como o VSCode), abra o arquivo `geps/migration/0014_carga_inicial_cidade.py` e, comece as edições:
+
++ Caso necessário, comente as linhas 22, 29 e 30, e descomente as linhas 23 a 25 - isso irá permitir uma carga reduzida dos dados para a Região Metropolitana da cidade da Escola:
++ Na linha 23, edite o comando SQL para Incluir o Estado e a Região Metropolitana necessárias. Por exemplo, para São Bernardo do Campo, modifique para:
+
+~~~
+    cidades=myduck.execute("select Estado,RegiaoMetropolitana,Cidade,lat,lon from cidades where Estado='SP' and RegiaoMetropolitana='Metropolitana de São Paulo'").fetchall()
+~~~
+
++ De Maneira Similar, modifique as linhas 24 e 25 para a Cidade e Região Metropolitana da Escola. Por exemplo, para Borda da Mata, modifique para:
+
+~~~
+    estado_instancia = estado_model.objects.get(sigla = 'MG')
+    regmet_instancia = regmet_model.objects.get(RegiaoMetropolitana = 'Sul/Sudoeste de Minas')
+~~~
+
+Feitos esses ajustes, espere o reset dos `max_questions` (normalmente 1 hora) e execute novamente o comando para aplicar as migrações
