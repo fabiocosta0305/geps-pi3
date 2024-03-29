@@ -127,7 +127,8 @@ class Bairro(models.Model):
         return self.nome + ' - ' + self.cidade.nome
 
     class Meta:
-        ordering = ['nome']
+        ordering = ['nome','cidade']
+
 
 
 class DisponibilidadeRegiao(models.Model):
