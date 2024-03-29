@@ -13,13 +13,22 @@ def load_data(apps,schema_editor):
     regmet_model=apps.get_model('geps', 'RegiaoMetropolitana')
     this_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'source_data'))
     myduck=duckdb.connect(this_dir + "/cidades_completo.duckdb")
+    #  
+    # ATENÇÃO: case use o código abaixo para carga de todas as cidades do país, 
+    #          comente as linhas 20 a 22 e descomente as linhas 25 e 26
+    #
+    # Utilize os códigos das linhas 23 a 25 se necessário devido a erros de max_questions do MySQL ou similares
+    # 
     # cidades=myduck.execute("select Estado,RegiaoMetropolitana,Cidade,lat,lon from cidades").fetchall()
-    cidades=myduck.execute("select Estado,RegiaoMetropolitana,Cidade,lat,lon from cidades where Estado='SP'").fetchall()
+    cidades=myduck.execute("select Estado,RegiaoMetropolitana,Cidade,lat,lon from cidades where Estado='SP' and  and RegiaoMetropolitana='Metropolitana de São Paulo'").fetchall()
+    estado_instancia = estado_model.objects.get(sigla = 'SP')
+    regmet_instancia = regmet_model.objects.get(RegiaoMetropolitana = 'Metropolitana de São Paulo')
     for cidade in cidades:
         estado,regmet,cidade,lat,lon=cidade
-        estado_instancia = estado_model.objects.get(sigla = estado)
-        regmet_instancia = regmet_model.objects.get(RegiaoMetropolitana = regmet)
-        # print(cidade[0])  # depuração de inserção
+        #
+        # estado_instancia = estado_model.objects.get(sigla = estado)
+        # regmet_instancia = regmet_model.objects.get(RegiaoMetropolitana = regmet)
+        print(cidade[0])  # depuração de inserção
         cidade_model.objects.get_or_create(
                 nome=cidade,
                 regmet = regmet_instancia,
