@@ -15,12 +15,12 @@ def load_data(apps,schema_editor):
     myduck=duckdb.connect(this_dir + "/cidades_completo.duckdb")
     #  
     # ATENÇÃO: case use o código abaixo para carga de todas as cidades do país, 
-    #          comente as linhas 20 a 22 e descomente as linhas 25 e 26
+    #          comente as linhas 23 a 25 e descomente as linhas 22, 29 e 30
     #
     # Utilize os códigos das linhas 23 a 25 se necessário devido a erros de max_questions do MySQL ou similares
     # 
     # cidades=myduck.execute("select Estado,RegiaoMetropolitana,Cidade,lat,lon from cidades").fetchall()
-    cidades=myduck.execute("select Estado,RegiaoMetropolitana,Cidade,lat,lon from cidades where Estado='SP' and  and RegiaoMetropolitana='Metropolitana de São Paulo'").fetchall()
+    cidades=myduck.execute("select Estado,RegiaoMetropolitana,Cidade,lat,lon from cidades where Estado='SP' and RegiaoMetropolitana='Metropolitana de São Paulo'").fetchall()
     estado_instancia = estado_model.objects.get(sigla = 'SP')
     regmet_instancia = regmet_model.objects.get(RegiaoMetropolitana = 'Metropolitana de São Paulo')
     for cidade in cidades:
