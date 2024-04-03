@@ -24,7 +24,7 @@ def empty_data(apps,schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('geps', '0001_initial'),
+        ('geps', '0002_permissoes_iniciais'),
     ]
 
     operations = [
