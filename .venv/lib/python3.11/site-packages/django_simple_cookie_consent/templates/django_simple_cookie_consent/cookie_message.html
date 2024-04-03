@@ -1,0 +1,29 @@
+{% load static %}
+{% if no_cookie_settings %}
+{% else %}
+<link rel="stylesheet" type="text/css" href="{% static 'django_simple_cookie_consent/css/cookieconsent.min.css' %}" />
+<script src="{% static 'django_simple_cookie_consent/js/cookieconsent.js' %}"></script>
+<script>
+window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+        "palette": {
+            "popup": {
+                "background": "{{ banner_colour }}",
+                "text": "{{ banner_text_colour }}"
+            },
+            "button": {
+                "background": "{{ button_colour }}",
+                "text": "{{ button_text_colour }}"
+            }
+        },
+        "content": {
+            "link": "{{ cookie_policy_link_text }}",
+            "href": "{{ cookie_policy_link }}",
+            "dismiss": "{{ button_text }}",
+            "message": "{{ message }}"
+        },
+        dismissOnScroll: true,
+    })
+});
+</script>
+{% endif %}
