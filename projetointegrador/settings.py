@@ -101,38 +101,38 @@ WSGI_APPLICATION = 'projetointegrador.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 # Configurations for Tests
-if sys.argv[1] == 'test':
-  DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
-    }
-  }
-else:
-  DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DATABASE_NAME'),
-        'HOST': os.environ.get('DATABASE_HOST'),
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        }
-    }
-  }
-
-# DATABASES = {
+# if sys.argv[1] == 'test':
+#   DATABASES = { 
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'geps',
-#         'HOST': '10.0.0.22',
-#         'USER': 'geps',
-#         'PASSWORD': 'geps',
-#         'PORT': '5432' # padrão 5432
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'db.sqlite3',
 #     }
-# }
+#   }
+# else:
+#   DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.environ.get('DATABASE_NAME'),
+#         'HOST': os.environ.get('DATABASE_HOST'),
+#         'USER': os.environ.get('DATABASE_USER'),
+#         'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         }
+#     }
+#   }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'geps',
+        'HOST': '10.0.0.31',
+        'USER': 'geps',
+        'PASSWORD': 'geps',
+        'PORT': '5432' # padrão 5432
+    }
+}
 
 # DATABASES = {
 #     'default': {

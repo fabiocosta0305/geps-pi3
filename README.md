@@ -98,6 +98,10 @@ Como usuário administrativo, (usualmente `postgres`), use o comando abaixo
 
 > `CREATE USER <usuario> IDENTIFIED BY '<senha>'`;
 
+> ***NOTA:*** Nas versões mais atuais do Postgresql (12+), utilize no lugar do comando anterior o seguinte
+>
+> `CREATE role <usuario> login password '<senha>'`;
+
 #### Criar Base de Dados
 
 + MySQL/MariaDB e PostgreSQL
@@ -121,7 +125,7 @@ Após criar o usuário e o banco, dê permissão ao banco para aquele usuário u
 
 Para tudo funcionar bem no PostgreSQL, é necessártio também passar a posse do banco para o usuário do banco
 
-`ALTER DATABASE <abnco> OWNER TO <usuario>;`
+`ALTER DATABASE <banco> OWNER TO <usuario>;`
 
 ### Ajustes de `settings.py`
 
